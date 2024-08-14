@@ -22,4 +22,5 @@ class UserSerializer(serializers.ModelSerializer):
 class RiverDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = RiverData
-        fields = ('riverID', 'riverName', 'datetime', 'stage')
+        # fields = ('riverID', 'riverName', 'datetime', 'stage')
+        fields = '__all__'

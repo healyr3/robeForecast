@@ -6,17 +6,28 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import generics
-
-from riverdata.models import RiverData
-from riverdata.serializers import RiverDataSerializer
+from django.http import JsonResponse
+from .models import RiverData
+from .serializers import RiverDataSerializer
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 
 # Create your views here.
-class RiverDataViewSet(generics.ListAPIView):
-    queryset = RiverData.objects.all()
-    serializer_class = RiverDataSerializer
+# class RiverDataViewSet(generics.ListAPIView):
+#     queryset = RiverData.objects.all()
+#     serializer_class = RiverDataSerializer
 
+# def river_data_list(request):
+#     river_data = RiverData.objects.all()
+#     return JsonResponse(list(river_data), safe=False)
 
+class RiverDataList(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request):
+        river_data = RiverData.objects.all()
+        serializer = RiverDataSerializer(river_data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 '''
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()

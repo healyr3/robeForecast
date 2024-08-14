@@ -16,7 +16,8 @@ export class DisplayRecordsComponent implements OnInit {
   ngOnInit(): void {
     this.riverDataService.getRiverData().subscribe(data => {
       this.riverData = data;
-    })
+    }, error => {
+      console.error('Error fetching river data', error)
+    });
   }
-
 }

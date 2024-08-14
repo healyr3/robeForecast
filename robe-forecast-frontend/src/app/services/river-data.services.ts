@@ -8,9 +8,9 @@ import { Observable } from "rxjs";
 export class RiverDataService {
   private apiUrl = 'http://127.0.0.1:8000/api/riverdata/';
 
-  constructor(private httpClient: HttpClient) {  }
+  constructor(private http: HttpClient) {}
 
   getRiverData(): Observable<any[]> {
-    return this.httpClient.get<any[]>(this.apiUrl);
+    return this.http.get<any[]>(this.apiUrl);
   }
 }
