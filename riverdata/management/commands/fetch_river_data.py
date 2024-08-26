@@ -1,18 +1,19 @@
 import re
 import requests
 from datetime import datetime, timedelta
-from django.http import JsonResponse
 from django.core.management.base import BaseCommand, CommandError
-from riverdata.models import RiverData
 
-# Fetch river data for Granite Falls
-class Command(BaseCommand):
-    # def fetch_granite_falls(request):
-    def handle(self, *args, **options):
-        url = 'https://www.nwrfc.noaa.gov/xml/xml.cgi?id=GFLW1&pe=HG&dtype=b&numdays=10'
-        # url = 'https://www.nwrfc.noaa.gov/station/flowplot/textPlot.cgi?id=GFLW1&pe=HG'
+from riverdata.models import GraniteFallsGauge, JordanRoadGauge, VerlotGauge
+from .combine_river_data import CombineCommand
+
+class BaseFetchRiverData:
+    river_id = None
+    gauge_name = None
+    url = None
+    model = None
+    def fetch_data(self):
         try:
-            response = requests.get(url)
+            response = requests.get(self.url)
             response.raise_for_status()  # Check if the response was successful
 
             data = response.text
@@ -27,27 +28,68 @@ class Command(BaseCommand):
                 combined_data = []
                 for dt_str, stage_str in zip(datetime_match, stage_match):
                     dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%SZ')
-                    stage = float(stage_str)
                     combined_data.append({
-                        'riverID': '01',
-                        'riverName': 'Granite Falls',
-                        'datetime': dt,
-                        'stage': stage
+                        'river_id': self.river_id,
+                        'gauge_name': self.gauge_name,
+                        'date': dt.date(),
+                        'time': dt.time(),
+                        'stage': float(stage_str)
                     })
+                # Sorting here will make the id for the entry non-sequential on the database.
+                # data = sorted(combined_data, key=lambda k: (k['date'], k['time']), reverse=True)
 
-                for entry in combined_data:
-                    RiverData.objects.update_or_create(
-                        datetime=entry['datetime'],
-                        defaults={
-                            'stage': entry['stage'],
-                            'riverID': entry['riverID'],
-                            'riverName': entry['riverName'],
-                        }
-                    )
-
-                self.stdout.write(self.style.SUCCESS('Successfully fetched river data.'))
-            else:
-                self.stdout.write(self.style.ERROR('Failed to fetch river data.'))
+                # Sorting here will make the id for the entry sequential on the database.
+                combined_data = sorted(combined_data, key=lambda k: (k['date'], k['time']))
+                self.update_database(combined_data)
+                return True, f'Successfully fetched river data.'
+            return False, f'Failed to fetch river data.'
 
         except requests.exceptions.RequestException as e:
-            self.stdout.write(self.style.ERROR(f'Error fetching river data: {e}'))
+            return False, f'Error fetching river data: {e}'
+
+    def update_database(self, data):
+        for entry in data:
+           self.model.objects.update_or_create(
+                date=entry['date'],
+                time=entry['time'],
+                defaults={
+                    'river_id': entry['river_id'],
+                    'gauge_name': entry['gauge_name'],
+                    'stage': entry['stage'],
+                }
+            )
+
+class FetchGraniteFallsData(BaseFetchRiverData):
+    river_id = '01'
+    gauge_name = 'Granite Falls'
+    url = 'https://www.nwrfc.noaa.gov/xml/xml.cgi?id=GFLW1&pe=HG&dtype=b&numdays=10'
+    model = GraniteFallsGauge
+
+
+class FetchJordanRoadData(BaseFetchRiverData):
+    river_id = '02'
+    gauge_name = 'Jordan Road'
+    url = 'https://www.nwrfc.noaa.gov/xml/xml.cgi?id=SSFW1&pe=HG&dtype=b&numdays=10'
+    model = JordanRoadGauge
+
+class FetchVerlotData(BaseFetchRiverData):
+    river_id = '03'
+    gauge_name = 'Verlot'
+    url = 'https://www.nwrfc.noaa.gov/xml/xml.cgi?id=SSVW1&pe=HG&dtype=b&numdays=10'
+    model = VerlotGauge
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        fetches = [FetchGraniteFallsData(), FetchJordanRoadData(), FetchVerlotData()]
+        combine_river_data = CombineCommand()
+        a = datetime.now()
+        for fetch in fetches:
+            success, message = fetch.fetch_data()
+            if success:
+                self.stdout.write(self.style.SUCCESS(message))
+            else:
+                self.stdout.write(self.style.ERROR(message))
+        combine_river_data.handle()
+        b = datetime.now()
+        delta = b - a
+        print(delta)

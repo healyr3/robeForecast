@@ -1,0 +1,35 @@
+<p>display-combined-gauges works!</p>
+
+<div class="row">
+  <div *ngIf="combinedData.length > 0; else noData">
+    <table class="center">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Location 1</th>
+          <th>Stage 1</th>
+          <th>Location 2</th>
+          <th>Stage 2</th>
+          <th>Location 3</th>
+          <th>Stage 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of combinedData">
+          <td>{{ data.date }}</td>
+          <td>{{ data.time }}</td>
+          <td>{{ data.gauge_1_name }}</td>
+          <td>{{ data.gauge_1_stage }}</td>
+          <td>{{ data.gauge_2_name }}</td>
+          <td>{{ data.gauge_2_stage }}</td>
+          <td>{{ data.gauge_3_name }}</td>
+          <td>{{ data.gauge_3_stage }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #noData>
+  <p>No data available.</p>
+</ng-template>

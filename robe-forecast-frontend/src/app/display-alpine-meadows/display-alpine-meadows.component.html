@@ -1,0 +1,31 @@
+<p>display-alpine-meadows works!</p>
+
+<div class="row">
+  <div *ngIf="alpineMeadowsData.length > 0; else noData">
+    <table class="center">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Snow Water Equivalent</th>
+          <th>Snow Depth</th>
+          <th>Precipitation</th>
+          <th>Air Temp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of alpineMeadowsData">
+          <td>{{ data.date }}</td>
+          <td>{{ data.time }}</td>
+          <td>{{ data.snow_water_equivalent }}</td>
+          <td>{{ data.snow_depth }}</td>
+          <td>{{ data.precipitation_accumulation }}</td>
+          <td>{{ data.air_temperature }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #noData>
+  <p>No data available.</p>
+</ng-template>

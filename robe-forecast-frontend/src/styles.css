@@ -1,1 +1,67 @@
-/* You can add global styles to this file, and also import other style files */
+/*Global Styles*/
+body {
+  background-color: #141414;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*height: 100vh;*/
+  margin: 0;
+}
+
+/*Flex container for the tables*/
+.row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.column {
+  /*float: left;*/
+  flex: 1;
+  width: 33.33%;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/*Table styling*/
+th, td {
+  text-align: center;
+  white-space: nowrap;
+  padding: 5px;
+  border-bottom: dimgray 1px solid;
+  border: black 1px solid;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+tr:hover, tr:nth-child(even):hover, tr:nth-child(odd):hover {
+  background-color: coral;
+}
+
+tr:nth-child(even) {
+  background-color: lightsteelblue;
+  color: black;
+}
+
+tr:nth-child(odd) {
+  background-color: lightskyblue;
+  color: black;
+}
+
+th {
+  background-color: darkgreen;
+  color: white;
+}

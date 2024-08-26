@@ -7,78 +7,96 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import generics
 from django.http import JsonResponse
-from .models import RiverData
-from .serializers import RiverDataSerializer
+from .models import GraniteFallsGauge, JordanRoadGauge, VerlotGauge, CombinedGauges, SilvertonWeatherPrediction, AlpineMeadowsGauge
+from .serializers import GraniteFallsGaugeSerializer, JordanRoadGaugeSerializer, VerlotGaugeSerializer, \
+    CombinedGaugesSerializer, SilvertonWeatherPredictionSerializer, AlpineMeadowsGaugeSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from datetime import datetime
+from dateutil import tz
+import plotly.express as px
+import pandas as pd
 
-
-# Create your views here.
-# class RiverDataViewSet(generics.ListAPIView):
-#     queryset = RiverData.objects.all()
-#     serializer_class = RiverDataSerializer
-
-# def river_data_list(request):
-#     river_data = RiverData.objects.all()
-#     return JsonResponse(list(river_data), safe=False)
-
-class RiverDataList(APIView):
+class GraniteFallsGaugeList(APIView):
     permission_classes = (AllowAny,)
     def get(self, request):
-        river_data = RiverData.objects.all()
-        serializer = RiverDataSerializer(river_data, many=True)
+        river_data = GraniteFallsGauge.objects.all()
+        serializer = GraniteFallsGaugeSerializer(river_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-'''
-class MovieViewSet(viewsets.ModelViewSet):
-    queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
-    authentication_classes = (TokenAuthentication, )
+
+class JordanRoadGaugeList(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request):
+        river_data = JordanRoadGauge.objects.all()
+        serializer = JordanRoadGaugeSerializer(river_data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class VerlotGaugeList(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request):
+        river_data = VerlotGauge.objects.all()
+        serializer = VerlotGaugeSerializer(river_data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class CombindedGaugeList(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request):
+        combined_gauges = CombinedGauges.objects.all().order_by('-date', '-time')
+        serializer = CombinedGaugesSerializer(combined_gauges, many=True)
+
+        data = serializer.data
+
+        for entry in data:
+            utc_datetime = datetime.strptime(f'{entry["date"]} {entry["time"]}', '%Y-%m-%d %H:%M:%S').replace(
+                tzinfo=tz.tzutc())
+            local_datetime = utc_datetime.astimezone(tz.tzlocal())
+            # print(utc_datetime, local_datetime)
+
+            entry['date'] = local_datetime.strftime('%m-%d-%y')
+            entry['time'] = local_datetime.strftime('%I:%M %p')
+
+        return Response(data, status=status.HTTP_200_OK)
+
+class SilvertonWeatherPredictionList(APIView):
     permission_classes = (AllowAny,)
 
-    @action(detail=True, methods=['POST'])
-    def rate_movie(self, request, pk=None):
-        if 'stars' in request.data:
+    def get(self, request):
+        silverton_weather = SilvertonWeatherPrediction.objects.all().order_by('-date', '-time')
+        serializer = SilvertonWeatherPredictionSerializer(silverton_weather, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-            movie = Movie.objects.get(id=pk)
-            stars = request.data['stars']
-            # user = request.user
-            user = User.objects.get(id=1)
-            print('user', user)
+class AlpineMeadowsGaugeList(APIView):
+    permission_classes = (AllowAny,)
 
-            try:
-                rating = Rating.objects.get(user=user.id, movie=movie.id)
-                rating.stars = stars
-                rating.save()
-                serializer = RatingSerializer(rating, many=False)
-                response = {'message': 'Rating updated', 'result': serializer.data}
-                return Response(response, status=status.HTTP_200_OK)
-            except:
-                Rating.object.create(user=user, movie=movie, stars=stars)
-                serializer = RatingSerializer(rating, many=False)
-                response = {'message': 'Rating created', 'result': serializer.data}
-                return Response(response, status=status.HTTP_200_OK)
+    def get(self, request):
+        alpine_meadows = AlpineMeadowsGauge.objects.all().order_by('-date', '-time')
+        serializer = AlpineMeadowsGaugeSerializer(alpine_meadows, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
+def jordan_chart(request):
+    river_data = JordanRoadGauge.objects.all()
 
+    df = pd.DataFrame(list(river_data.values('date', 'time', 'stage')))
+    df['datetime_utc'] = pd.to_datetime(df['date'].astype(str) + ' ' + df['time'].astype(str)).dt.tz_localize('UTC')
+    df['datetime_local'] = df['datetime_utc'].dt.tz_convert(tz.tzlocal())
+    df.sort_values(by='datetime_local', inplace=True)
 
-        else:
-            response = {'message': 'You need to provide stars'}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
-'''
+    print(df.datetime_local)
 
-'''
-class RatingViewSet(viewsets.ModelViewSet):
-    queryset = Rating.objects.all()
-    serializer_class = RatingSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    df['type'] = 'Observed'
+    now = datetime.now(tz=tz.tzlocal()).strftime('%Y-%m-%d %H:%M:%S')
+    df.loc[df['datetime_local'] > now, 'type'] = 'Forecast'
 
-    def update(self, request, pk=None):
-        response = {'message': 'You cant update rating like that' }
-        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+    print(now)
 
-    def create(self, request, pk=None):
-        response = {'message': 'You cant update rating like that' }
-        return Response(response, status=status.HTTP_400_BAD_REQUEST)
-'''
+    fig = px.line(
+        df,
+        x='datetime_local',
+        y='stage',
+        color='type',
+        title='Jordan River Stage'
+    )
 
+    chart_html = fig.to_html(full_html=False)
 
+    return JsonResponse({'chart': chart_html})

@@ -1,0 +1,27 @@
+<p>display-silverton-prediction works!</p>
+
+<div class="row">
+  <div *ngIf="silvertonData.length > 0; else noData">
+    <table class="center">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Temp</th>
+          <th>Rain 3h</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of silvertonData">
+          <td>{{ data.date }}</td>
+          <td>{{ data.time }}</td>
+          <td>{{ data.temp }}</td>
+          <td>{{ data.rain_3h }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #noData>
+  <p>No data available.</p>
+</ng-template>
