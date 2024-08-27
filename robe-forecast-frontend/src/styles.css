@@ -9,6 +9,11 @@ body {
   margin: 0;
 }
 
+.chart {
+  height: 100px;
+  width: 100px;
+}
+
 /*Flex container for the tables*/
 .row {
   display: flex;
