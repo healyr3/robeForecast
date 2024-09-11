@@ -1,0 +1,31 @@
+<!--<p>display-granite-forecast works!</p>-->
+<br><br>
+<div id="Plot">
+  <plotly-plot [data]="graniteChartData" [layout]="graniteChartLayout"></plotly-plot>
+</div>
+<br><br>
+<div class="row">
+  <div *ngIf="graniteTableData.length > 0; else noData">
+    <table class="center">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Stage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of graniteTableData">
+          <td>{{ data.date }}</td>
+          <td>{{ data.time }}</td>
+          <td>{{ data.stage }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div>
+  <ng-template #noData>
+    <p>No data available.</p>
+  </ng-template>
+</div>

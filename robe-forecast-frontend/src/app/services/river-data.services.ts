@@ -27,8 +27,16 @@ export class RiverDataService {
     return this.http.get<any[]>(`${this.baseUrl}/combinedgauges/`)
   }
 
+  getPredictionData(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/combinedpredictions/`)
+  }
+
   getSilvertonWeatherPrediction(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/silvertonprediction/`)
+  }
+
+    getAlpineMeadowsWeatherPrediction(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/alpinemeadowsprediction/`)
   }
 
   getAlpineMeadowsGauge(): Observable<any[]> {
@@ -37,6 +45,14 @@ export class RiverDataService {
 
   getJordanChart(): Observable<any> {
     return this.http.get(`${this.baseUrl}/jordanchart/`, { responseType: 'json' })
+  }
+
+  getGraniteForecastChart(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/granitefallsforecastchart/`, { responseType: 'json' })
+  }
+
+  getGraniteForecastTable(): Observable<any> {
+    return this.http.get<any[]>(`${this.baseUrl}/granitefallsforecasttable/`)
   }
 
 }

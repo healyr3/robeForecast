@@ -7,6 +7,8 @@ import {
 } from "./display-silverton-prediction/display-silverton-prediction.component";
 import {DisplayAlpineMeadowsComponent} from "./display-alpine-meadows/display-alpine-meadows.component";
 import {DisplayJordanChartComponent} from "./display-jordan-chart/display-jordan-chart.component";
+import {DisplayPredictionChartComponent} from "./display-prediction-chart/display-prediction-chart.component";
+import {DisplayGraniteForecastComponent} from "./display-granite-forecast/display-granite-forecast.component";
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -15,4 +17,6 @@ export const routes: Routes = [
   { path: 'display-silverton-prediction', component: DisplaySilvertonPredictionComponent },
   { path: 'display-alpine-meadows', component: DisplayAlpineMeadowsComponent },
   { path: 'display-jordan-chart', component: DisplayJordanChartComponent },
+  { path: 'display-weather-predictions', component: DisplayPredictionChartComponent},
+  { path: 'display-granite-forecast', component: DisplayGraniteForecastComponent },
 ];

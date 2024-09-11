@@ -1,10 +1,8 @@
-import json
-import re
 import requests
 import pandas as pd
 from io import StringIO
-from datetime import datetime, timedelta
-from django.core.management.base import BaseCommand, CommandError
+from datetime import datetime
+from django.core.management.base import BaseCommand
 
 from riverdata.models import AlpineMeadowsGauge
 

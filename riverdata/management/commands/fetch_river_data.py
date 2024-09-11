@@ -1,10 +1,10 @@
 import re
 import requests
-from datetime import datetime, timedelta
-from django.core.management.base import BaseCommand, CommandError
+from datetime import datetime
+from django.core.management.base import BaseCommand
 
 from riverdata.models import GraniteFallsGauge, JordanRoadGauge, VerlotGauge
-from .combine_river_data import CombineCommand
+from .combine_river_data import Command as CombineCommand
 
 class BaseFetchRiverData:
     river_id = None
@@ -78,10 +78,11 @@ class FetchVerlotData(BaseFetchRiverData):
     url = 'https://www.nwrfc.noaa.gov/xml/xml.cgi?id=SSVW1&pe=HG&dtype=b&numdays=10'
     model = VerlotGauge
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         fetches = [FetchGraniteFallsData(), FetchJordanRoadData(), FetchVerlotData()]
-        combine_river_data = CombineCommand()
+        combined_data = CombineCommand()
         a = datetime.now()
         for fetch in fetches:
             success, message = fetch.fetch_data()
@@ -89,7 +90,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(message))
             else:
                 self.stdout.write(self.style.ERROR(message))
-        combine_river_data.handle()
+        combined_data.handle()
         b = datetime.now()
         delta = b - a
         print(delta)

@@ -1,17 +1,24 @@
 /*Global Styles*/
 body {
-  background-color: #141414;
+  background-color: #202124;
   color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /*display: flex;*/
+  /*justify-content: center;*/
+  /*align-items: center;*/
   /*height: 100vh;*/
   margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.chart {
-  height: 100px;
-  width: 100px;
+#Plot {
+  width: 90%;
+  text-align: center;
+  margin: auto;
+}
+
+.chart-container {
+  width: 90%;
+  max-width: 90%;
 }
 
 /*Flex container for the tables*/
@@ -43,9 +50,9 @@ body {
 th, td {
   text-align: center;
   white-space: nowrap;
-  padding: 5px;
+  padding: 2px;
   border-bottom: dimgray 1px solid;
-  border: black 1px solid;
+  border: #202124 1px solid;
 }
 
 table {
@@ -53,20 +60,21 @@ table {
 }
 
 tr:hover, tr:nth-child(even):hover, tr:nth-child(odd):hover {
-  background-color: coral;
+  background-color: #D81159;
+  color: white;
 }
 
 tr:nth-child(even) {
-  background-color: lightsteelblue;
-  color: black;
+  background-color: #D5ECD4;
+  color: #202124;
 }
 
 tr:nth-child(odd) {
-  background-color: lightskyblue;
-  color: black;
+  background-color: #A3BFA8;
+  color: #202124;
 }
 
 th {
-  background-color: darkgreen;
+  background-color: #2E86AB;
   color: white;
 }

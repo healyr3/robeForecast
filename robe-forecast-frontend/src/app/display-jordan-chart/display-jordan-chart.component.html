@@ -1,2 +1,5 @@
 <p>display-jordan-chart works!</p>
-<div [innerHTML]="jordanChart"></div>
+<!--<div [innerHTML]="jordanChart"></div>-->
+<div id="Plot">
+  <plotly-plot [data]="jordanChartData" [layout]="jordanChartLayout"></plotly-plot>
+</div>

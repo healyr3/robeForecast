@@ -1,0 +1,11 @@
+.navbar {
+  flex: 1 1 auto;
+  background-color: #2E86AB;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+}

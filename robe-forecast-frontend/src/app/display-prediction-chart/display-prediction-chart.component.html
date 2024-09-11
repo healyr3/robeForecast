@@ -1,0 +1,49 @@
+<p>display-prediction-chart works!</p>
+
+<div class="row">
+  <div *ngIf="combinedData.length > 0; else noData">
+    <table class="center">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Gauge</th>
+          <th>Stage</th>
+          <th>Silverton Temp</th>
+          <th>Silverton Rain 3h</th>
+          <th>Silverton Snow 3h</th>
+          <th>Alpine Meadows Temp</th>
+          <th>Alpine Meadows Rain 3h</th>
+          <th>Alpine Meadows Snow 3h</th>
+          <th>Alpine Meadows SWE</th>
+          <th>Alpine Meadows Snow Depth</th>
+          <th>Alpine Meadows Precipitation Accumulation</th>
+          <th>Alpine Meadows Temp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of combinedData">
+          <td>{{ data.date }}</td>
+          <td>{{ data.time }}</td>
+          <td>{{ data.gauge_name }}</td>
+          <td>{{ data.gauge_stage }}</td>
+          <td>{{ data.sp_temp | number:'1.2-2' }}</td>
+          <td>{{ data.sp_rain_3h }}</td>
+          <td>{{ data.sp_snow_3h }}</td>
+          <td>{{ data.ap_temp | number:'1.2-2'  }}</td>
+          <td>{{ data.ap_rain_3h }}</td>
+          <td>{{ data.ap_snow_3h }}</td>
+          <td>{{ data.am_snow_water_equivalent }}</td>
+          <td>{{ data.am_snow_depth }}</td>
+          <td>{{ data.am_precipitation_accumulation }}</td>
+          <td>{{ data.am_air_temperature }}</td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #noData>
+  <p>No data available.</p>
+</ng-template>
+

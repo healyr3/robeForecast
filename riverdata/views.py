@@ -1,48 +1,54 @@
-import json
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+import pandas as pd
+from django.utils import timezone
 
-import plotly
-from django.contrib.auth.models import User
-from django.shortcuts import render
 from rest_framework import viewsets, status, authentication
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from rest_framework import generics
 from django.http import JsonResponse
-from .models import GraniteFallsGauge, JordanRoadGauge, VerlotGauge, CombinedGauges, SilvertonWeatherPrediction, AlpineMeadowsGauge
+from .models import GraniteFallsGauge, JordanRoadGauge, VerlotGauge, CombinedGauges, SilvertonWeatherPrediction, \
+    AlpineMeadowsGauge, AlpineMeadowsWeatherPrediction, CombinedPredictions, GraniteFallsForecast
 from .serializers import GraniteFallsGaugeSerializer, JordanRoadGaugeSerializer, VerlotGaugeSerializer, \
-    CombinedGaugesSerializer, SilvertonWeatherPredictionSerializer, AlpineMeadowsGaugeSerializer
+    CombinedGaugesSerializer, SilvertonWeatherPredictionSerializer, AlpineMeadowsGaugeSerializer, \
+    AlpineMeadowsWeatherPredictionSerializer, CombinedPredictionsSerializer, GraniteFallsPredictionSerializer, \
+    GraniteFallsForecastSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from datetime import datetime
 from dateutil import tz
-import plotly.express as px
-import pandas as pd
+
 
 class GraniteFallsGaugeList(APIView):
     permission_classes = (AllowAny,)
+
     def get(self, request):
         river_data = GraniteFallsGauge.objects.all()
         serializer = GraniteFallsGaugeSerializer(river_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class JordanRoadGaugeList(APIView):
     permission_classes = (AllowAny,)
+
     def get(self, request):
         river_data = JordanRoadGauge.objects.all()
         serializer = JordanRoadGaugeSerializer(river_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class VerlotGaugeList(APIView):
     permission_classes = (AllowAny,)
+
     def get(self, request):
         river_data = VerlotGauge.objects.all()
         serializer = VerlotGaugeSerializer(river_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class CombindedGaugeList(APIView):
     permission_classes = (AllowAny,)
+
     def get(self, request):
         combined_gauges = CombinedGauges.objects.all().order_by('-date', '-time')
         serializer = CombinedGaugesSerializer(combined_gauges, many=True)
@@ -60,6 +66,28 @@ class CombindedGaugeList(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
 
+
+class CombindedPredictionsList(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        combined_predictions = CombinedPredictions.objects.all().order_by('-date', '-time')
+        serializer = CombinedPredictionsSerializer(combined_predictions, many=True)
+
+        data = serializer.data
+
+        for entry in data:
+            utc_datetime = datetime.strptime(f'{entry["date"]} {entry["time"]}', '%Y-%m-%d %H:%M:%S').replace(
+                tzinfo=tz.tzutc())
+            local_datetime = utc_datetime.astimezone(tz.tzlocal())
+            # print(utc_datetime, local_datetime)
+
+            entry['date'] = local_datetime.strftime('%m-%d-%y')
+            entry['time'] = local_datetime.strftime('%I:%M %p')
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
 class SilvertonWeatherPredictionList(APIView):
     permission_classes = (AllowAny,)
 
@@ -68,6 +96,16 @@ class SilvertonWeatherPredictionList(APIView):
         serializer = SilvertonWeatherPredictionSerializer(silverton_weather, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class AlpineMeadowsWeatherPredictionList(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        alpine_meadows_weather = AlpineMeadowsWeatherPrediction.objects.all().order_by('-date', '-time')
+        serializer = AlpineMeadowsWeatherPredictionSerializer(alpine_meadows_weather, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class AlpineMeadowsGaugeList(APIView):
     permission_classes = (AllowAny,)
 
@@ -75,6 +113,7 @@ class AlpineMeadowsGaugeList(APIView):
         alpine_meadows = AlpineMeadowsGauge.objects.all().order_by('-date', '-time')
         serializer = AlpineMeadowsGaugeSerializer(alpine_meadows, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 def jordan_chart(request):
     river_data = JordanRoadGauge.objects.all()
@@ -100,6 +139,135 @@ def jordan_chart(request):
         title='Jordan River Stage'
     )
 
-    chart_html = fig.to_html(full_html=False)
+    # chart_html = fig.to_html(full_html=False)
+    #
+    # return JsonResponse({'chart': chart_html}
+    chart_dict = fig.to_dict()
 
-    return JsonResponse({'chart': chart_html})
+    def convert_np_to_list(obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, dict):
+            return {k: convert_np_to_list(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [convert_np_to_list(elem) for elem in obj]
+        else:
+            return obj
+
+    chart_json = convert_np_to_list(chart_dict)
+
+    return JsonResponse({'chart': chart_json})
+
+
+class GraniteFallsPrediction(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        river_data = GraniteFallsPrediction.objects.all()
+        serializer = GraniteFallsPredictionSerializer(river_data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def granite_forecast_chart(request):
+    river_data = GraniteFallsForecast.objects.all()
+
+    df = pd.DataFrame(list(river_data.values('date', 'time', 'stage')))
+    df['datetime_utc'] = pd.to_datetime(df['date'].astype(str) + ' ' + df['time'].astype(str)).dt.tz_localize('UTC')
+    df['datetime_local'] = df['datetime_utc'].dt.tz_convert(tz.tzlocal())
+    df.sort_values(by='datetime_local', inplace=True)
+
+    print(df.datetime_local)
+
+    df['Category'] = 'Observed'
+    now = datetime.now(tz=tz.tzlocal()).strftime('%Y-%m-%d %H:%M:%S')
+    df.loc[df['datetime_local'] > now, 'Category'] = 'Forecast'
+
+    print(now)
+
+    fig = px.line(
+        df,
+        x='datetime_local',
+        y='stage',
+        color='Category',
+        title='Granite Falls \'Robe\' Stage',
+        labels={'datetime_local': '', 'stage': 'Stage [ft]', 'Category': ''},
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=[df['datetime_local'].min(), df['datetime_local'].max()],  # x-coordinates
+            y=[5, 5],  # y-coordinates for the line
+            line=go.scatter.Line(color='Orange', width=2, dash='dash'),
+            name='A Bit Low'
+        )
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=[df['datetime_local'].min(), df['datetime_local'].max()],  # x-coordinates
+            y=[5.5, 5.5],  # y-coordinates for the line
+            line=go.scatter.Line(color='Green', width=2, dash='dash'),
+            name='Getting Good'
+        )
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=[df['datetime_local'].min(), df['datetime_local'].max()],  # x-coordinates
+            y=[6, 6],  # y-coordinates for the line
+            line=go.scatter.Line(color='Purple', width=2, dash='dash'),
+            name='Mortal Limit'
+        )
+    )
+
+
+    # chart_html = fig.to_html(full_html=False)
+    #
+    # return JsonResponse({'chart': chart_html}
+    chart_dict = fig.to_dict()
+
+    def convert_np_to_list(obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, dict):
+            return {k: convert_np_to_list(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [convert_np_to_list(elem) for elem in obj]
+        else:
+            return obj
+
+    chart_json = convert_np_to_list(chart_dict)
+
+    return JsonResponse({'chart': chart_json})
+
+
+class GraniteForecastList(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        river_data = GraniteFallsForecast.objects.all()
+        serializer = GraniteFallsForecastSerializer(river_data, many=True)
+        now_utc = timezone.now().astimezone(tz.tzutc())
+        filtered_data = []
+        data = serializer.data
+
+        for entry in river_data:
+            combined_datetime = datetime.combine(entry.date, entry.time).replace(tzinfo=tz.tzutc())
+
+            if combined_datetime > now_utc:
+                filtered_data.append(entry)
+
+        serializer = GraniteFallsForecastSerializer(filtered_data, many=True)
+        data = serializer.data
+
+        for entry in data:
+            utc_datetime = datetime.strptime(f'{entry["date"]} {entry["time"]}', '%Y-%m-%d %H:%M:%S').replace(
+                tzinfo=tz.tzutc())
+            local_datetime = utc_datetime.astimezone(tz.tzlocal())
+            # print(utc_datetime, local_datetime)
+
+            # entry['date'] = local_datetime.strftime('%m-%d-%y')
+            entry['date'] = local_datetime.strftime('%a, %b %d')
+            entry['time'] = local_datetime.strftime('%I:%M %p')
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
