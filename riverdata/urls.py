@@ -3,14 +3,13 @@ from django.urls import path
 from rest_framework import routers
 from django.conf.urls import include
 
-from .views import (GraniteFallsGaugeList, JordanRoadGaugeList, VerlotGaugeList, CombindedGaugeList,
+from .views import (GraniteFallsGaugeList, JordanRoadGaugeList, CombindedGaugeList,
                     SilvertonWeatherPredictionList, AlpineMeadowsGaugeList, jordan_chart, CombindedPredictionsList,
                     granite_forecast_chart, GraniteForecastList)
 
 urlpatterns = [
     path('granitefalls/', GraniteFallsGaugeList.as_view(), name='granitefalls'),
     path('jordanroad/', JordanRoadGaugeList.as_view(), name='jordanroad'),
-    path('verlot/', VerlotGaugeList.as_view(), name='verlot'),
     path('combinedgauges/', CombindedGaugeList.as_view(), name='combinedgauges'),
     path('combinedpredictions/', CombindedPredictionsList.as_view(), name='combinedpredictions'),
     path('silvertonprediction/', SilvertonWeatherPredictionList.as_view(), name='silvertonprediction'),

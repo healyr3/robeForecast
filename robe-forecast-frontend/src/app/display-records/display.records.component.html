@@ -22,7 +22,7 @@
     </table>
   </div>
 
-    <div class="column" *ngIf="jordanRoadData.length > 0; else noData">
+  <div class="column" *ngIf="jordanRoadData.length > 0; else noData">
     <table>
       <thead>
         <tr>
@@ -34,27 +34,6 @@
       </thead>
       <tbody>
         <tr *ngFor="let data of jordanRoadData">
-          <td>{{ data.gauge_name }}</td>
-          <td>{{ data.date }}</td>
-          <td>{{ data.time }}</td>
-          <td>{{ data.stage }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-    <div class="column" *ngIf="verlotData.length > 0; else noData">
-    <table>
-      <thead>
-        <tr>
-          <th>River Name</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Stage</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let data of verlotData">
           <td>{{ data.gauge_name }}</td>
           <td>{{ data.date }}</td>
           <td>{{ data.time }}</td>

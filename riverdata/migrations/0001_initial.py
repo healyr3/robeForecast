@@ -82,7 +82,6 @@ class Migration(migrations.Migration):
             name='GraniteFallsGauge',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('river_id', models.IntegerField()),
                 ('gauge_name', models.CharField(max_length=100)),
                 ('date', models.DateField()),
                 ('time', models.TimeField()),
@@ -90,7 +89,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'abstract': False,
-                'unique_together': {('river_id', 'date', 'time')},
+                'unique_together': {('date', 'time')},
             },
         ),
         migrations.CreateModel(

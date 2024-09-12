@@ -14,7 +14,6 @@ import { Title } from "@angular/platform-browser";
 export class DisplayRecordsComponent implements OnInit {
   graniteFallsData: any[] = [];
   jordanRoadData: any[] = [];
-  verlotData: any[] = [];
 
   constructor(private riverDataService: RiverDataService, private titleService: Title) {}
 
@@ -30,10 +29,6 @@ export class DisplayRecordsComponent implements OnInit {
 
     this.riverDataService.getJordanRoadData().subscribe(data => {
       this.jordanRoadData = data;
-    });
-
-    this.riverDataService.getVerlotData().subscribe(data => {
-      this.verlotData = data;
     });
   }
 }

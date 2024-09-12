@@ -1,7 +1,7 @@
 import json
 import requests
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 from django.core.management.base import BaseCommand
 
 from riverdata.models import SilvertonWeatherPrediction, AlpineMeadowsWeatherPrediction
@@ -17,6 +17,9 @@ class BaseFetchWeatherData:
     def fetch_data(self):
         try:
             try:
+                # Delete tables entries for reset
+                # self.model.objects.all().delete()
+
                 response = requests.get(self.url)
                 response.raise_for_status()  # Check if the response was successful
 
@@ -30,12 +33,14 @@ class BaseFetchWeatherData:
                     snow_3h = entry.get('snow', {}).get('3h', 0)
 
                     dt = datetime.strptime(datetimestamp, '%Y-%m-%d %H:%M:%S')
+                    dt = dt.replace(tzinfo=timezone.utc)
                     date = dt.date()
                     time = dt.time()
 
                     temp = ((temp - 273.15) * (9/5) + 32)
 
-                    data_list.append({'date': date, 'time': time, 'temp': temp, 'rain_3h': rain_3h, 'snow_3h': snow_3h})
+                    data_list.append({'datetime': dt,'date': date, 'time': time, 'temp': temp, 'rain_3h': rain_3h,
+                                      'snow_3h': snow_3h})
 
                 df = pd.DataFrame(data_list)
 
@@ -55,6 +60,7 @@ class BaseFetchWeatherData:
     def update_database(self, data):
         for entry in data:
             self.model.objects.update_or_create(
+                datetime=entry['datetime'],
                 date=entry['date'],
                 time=entry['time'],
                 defaults={

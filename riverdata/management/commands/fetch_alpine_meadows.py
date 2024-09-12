@@ -1,13 +1,14 @@
 import requests
 import pandas as pd
 from io import StringIO
-from datetime import datetime
+from datetime import datetime, timezone
 from django.core.management.base import BaseCommand
 
 from riverdata.models import AlpineMeadowsGauge
 
 
 class BaseFetchWeatherData:
+    datetime = None
     date = None
     time = None
     snow_water_equivalent = None
@@ -50,11 +51,15 @@ class BaseFetchWeatherData:
                     precipitation_accumulation = row['Precipitation Accumulation (in)']
                     air_temperature = row['Air Temperature Observed (degF)']
 
+                    # print(datetimestamp)
+
                     dt = datetime.strptime(datetimestamp, '%Y-%m-%d %H:%M')
+                    dt = dt.replace(tzinfo=timezone.utc)
                     date = dt.date()
                     time = dt.time()
 
-                    data_list.append({'date': date,
+                    data_list.append({'datetime': dt,
+                                      'date': date,
                                       'time': time,
                                       'snow_water_equivalent': snow_water_equivalent,
                                       'snow_depth': snow_depth,
@@ -68,7 +73,7 @@ class BaseFetchWeatherData:
                 # data = sorted(combined_data, key=lambda k: (k['date'], k['time']), reverse=True)
 
                 # Sorting here will make the id for the entry sequential on the database.
-                df = df.sort_values(by=['date', 'time'], ascending=[True, False])
+                df = df.sort_values(by=['datetime'], ascending=[True])
                 self.update_database(df.to_dict(orient='records'))
                 return True, f'Successfully fetched Alpine Meadows data.'
             except Exception as e:
@@ -80,6 +85,7 @@ class BaseFetchWeatherData:
     def update_database(self, data):
         for entry in data:
             self.model.objects.update_or_create(
+                datetime=entry['datetime'],
                 date=entry['date'],
                 time=entry['time'],
                 defaults={

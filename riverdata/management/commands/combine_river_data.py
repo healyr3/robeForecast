@@ -7,29 +7,35 @@ class Command(BaseCommand):
     model = CombinedGauges
     def handle(self, *args, **options):
         try:
-            granite_falls_data = list(GraniteFallsGauge.objects.all().values('date', 'time', 'gauge_name', 'stage'))
-            jordan_road_data = list(JordanRoadGauge.objects.all().values('date', 'time', 'gauge_name', 'stage'))
+            granite_falls_data = list(GraniteFallsGauge.objects.all().values('date', 'time', 'gauge_name', 'stage',
+                                                                             'datetime'))
+            jordan_road_data = list(JordanRoadGauge.objects.all().values('date', 'time', 'gauge_name', 'stage',
+                                                                         'datetime'))
 
             all_keys = set()
             for data in [granite_falls_data, jordan_road_data]:
                 for entry in data:
-                    all_keys.add((entry['date'], entry['time']))
+                    if entry['datetime'] is not None:
+                        all_keys.add((entry['datetime']))
 
             combined_data = []
-            for date, time in sorted(all_keys):
+            for dt in sorted(all_keys):
                 entry = {
-                    'date': date,
-                    'time': time,
+                    'datetime': dt,
+                    'date': None,
+                    'time': None,
                     'gauge_1_name': None,
                     'gauge_1_stage': None,
                     'gauge_2_name': None,
                     'gauge_2_stage': None,
                 }
 
-                gd = next((g for g in granite_falls_data if g['date'] == date and g['time'] == time), None)
-                jd = next((j for j in jordan_road_data if j['date'] == date and j['time'] == time), None)
+                gd = next((g for g in granite_falls_data if g['datetime'] == dt), None)
+                jd = next((j for j in jordan_road_data if j['datetime'] == dt), None)
 
                 if gd:
+                    entry['date'] = gd['date']
+                    entry['time'] = gd['time']
                     entry['gauge_1_name'] = gd['gauge_name']
                     entry['gauge_1_stage'] = gd['stage']
                 if jd:
@@ -39,7 +45,7 @@ class Command(BaseCommand):
                 if gd and jd:
                     combined_data.append(entry)
 
-            combined_data = sorted(combined_data, key=lambda k: (k['date'], k['time']))
+            combined_data = sorted(combined_data, key=lambda k: (k['datetime']))
 
             self.update_database(combined_data)
             self.stdout.write(self.style.SUCCESS('Successfully combined river data.'))
@@ -50,6 +56,7 @@ class Command(BaseCommand):
     def update_database(self, data):
         for entry in data:
             self.model.objects.update_or_create(
+                datetime=entry['datetime'],
                 date=entry['date'],
                 time=entry['time'],
                 defaults={

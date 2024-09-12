@@ -1,5 +1,6 @@
+from datetime import datetime, timezone
+
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
 from riverdata.models import (SilvertonWeatherPrediction, AlpineMeadowsWeatherPrediction, AlpineMeadowsGauge,
                               JordanRoadGauge, CombinedPredictions)
@@ -9,31 +10,38 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            current_datetime = timezone.now()
-            silverton_prediction = list(SilvertonWeatherPrediction.objects.filter(date__gt=current_datetime).values(
-                'date', 'time', 'temp', 'rain_3h', 'snow_3h'))
-            alpine_meadows_prediction = list(AlpineMeadowsWeatherPrediction.objects.filter(date__gt=current_datetime).values(
-                'date', 'time', 'temp', 'rain_3h', 'snow_3h'))
-            # alpine_meadows_data = list(AlpineMeadowsGauge.objects.all().values())
-            jordan_road_data = list(JordanRoadGauge.objects.filter(date__gt=current_datetime).values('date', 'time', 'gauge_name', 'stage'))
+            # Delete tables entries for reset
+            self.model.objects.all().delete()
+
+            current_dt = datetime.now(timezone.utc)
+
+            silverton_prediction = list(SilvertonWeatherPrediction.objects.filter(datetime__gt=current_dt).values(
+                'datetime', 'date', 'time', 'temp', 'rain_3h', 'snow_3h'))
+
+            alpine_meadows_prediction = list(AlpineMeadowsWeatherPrediction.objects.filter(datetime__gt=current_dt)
+                                             .values('datetime', 'date', 'time', 'temp', 'rain_3h', 'snow_3h'))
+
+            jordan_road_data = list(JordanRoadGauge.objects.filter(datetime__gt=current_dt).values('datetime',
+                                                                                                   'date', 'time',
+                                                                                                   'gauge_name',
+                                                                                                   'stage'))
+
             alpine_meadows_data = AlpineMeadowsGauge.objects.latest('snow_water_equivalent',
                                                                     'snow_depth',
                                                                     'precipitation_accumulation',
                                                                     'air_temperature')
 
             all_keys = set()
-            # for data in [silverton_prediction, alpine_meadows_prediction, alpine_meadows_data, jordan_road_data]:
             for data in [silverton_prediction, alpine_meadows_prediction, jordan_road_data]:
                 for entry in data:
-                    all_keys.add((entry['date'], entry['time']))
-
-            # print(f'all_keys: {all_keys}')
+                    all_keys.add((entry['datetime']))
 
             combined_data = []
-            for date, time in sorted(all_keys):
+            for dt in sorted(all_keys):
                 entry = {
-                    'date': date,
-                    'time': time,
+                    'datetime': dt,
+                    'date': dt.date(),
+                    'time': dt.time(),
                     'sp_temp': None,
                     'sp_rain_3h': None,
                     'sp_snow_3h': None,
@@ -48,12 +56,9 @@ class Command(BaseCommand):
                     'am_air_temperature': None,
                 }
 
-                sp = next((s for s in silverton_prediction if s['date'] == date and s['time'] == time), None)
-                # print(sp)
-                ap = next((a for a in alpine_meadows_prediction if a['date'] == date and a['time'] == time), None)
-                # print(ap)
-                # ad = next((a for a in alpine_meadows_data if a['date'] == date and a['time'] == time), None)
-                jd = next((j for j in jordan_road_data if j['date'] == date and j['time'] == time), None)
+                sp = next((s for s in silverton_prediction if s['datetime'] == dt), None)
+                ap = next((a for a in alpine_meadows_prediction if a['datetime'] == dt), None)
+                jd = next((j for j in jordan_road_data if j['datetime'] == dt), None)
 
                 if sp:
                     entry['sp_temp'] = sp['temp']
@@ -72,17 +77,13 @@ class Command(BaseCommand):
                     entry['am_precipitation_accumulation'] = alpine_meadows_data.precipitation_accumulation
                     entry['am_air_temperature'] = alpine_meadows_data.air_temperature
 
-                # print(entry)
-
                 if sp and ap and jd:
                     combined_data.append(entry)
 
-
-            combined_data = sorted(combined_data, key=lambda k: (k['date'], k['time']))
+            combined_data = sorted(combined_data, key=lambda k: (k['datetime']))
             # print(combined_data)
 
             self.update_database(combined_data)
-            # print(combined_data)
 
             self.stdout.write(self.style.SUCCESS('Successfully combined prediction data.'))
 
@@ -92,6 +93,7 @@ class Command(BaseCommand):
     def update_database(self, data):
         for entry in data:
             self.model.objects.update_or_create(
+                datetime=entry['datetime'],
                 date=entry['date'],
                 time=entry['time'],
                 defaults={

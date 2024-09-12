@@ -19,10 +19,6 @@ export class RiverDataService {
     return this.http.get<any[]>(`${this.baseUrl}/jordanroad/`);
   }
 
-  getVerlotData(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/verlot/`);
-  }
-
   getCombinedData(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/combinedgauges/`)
   }
@@ -35,7 +31,7 @@ export class RiverDataService {
     return this.http.get<any[]>(`${this.baseUrl}/silvertonprediction/`)
   }
 
-    getAlpineMeadowsWeatherPrediction(): Observable<any[]> {
+  getAlpineMeadowsWeatherPrediction(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/alpinemeadowsprediction/`)
   }
 

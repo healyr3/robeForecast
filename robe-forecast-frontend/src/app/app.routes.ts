@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { LandingPageComponent } from "./landing.page/landing.page.component";
-import { DisplayRecordsComponent } from "./display.records/display.records.component";
+import { LandingPageComponent } from "./landing-page/landing.page.component";
+import { DisplayRecordsComponent } from "./display-records/display.records.component";
 import { DisplayCombinedGaugesComponent } from "./display-combined-gauges/display-combined-gauges.component";
 import {
   DisplaySilvertonPredictionComponent

@@ -7,15 +7,15 @@ from django.utils import timezone
 from rest_framework import viewsets, status, authentication
 from rest_framework.response import Response
 from django.http import JsonResponse
-from .models import GraniteFallsGauge, JordanRoadGauge, VerlotGauge, CombinedGauges, SilvertonWeatherPrediction, \
+from .models import GraniteFallsGauge, JordanRoadGauge, CombinedGauges, SilvertonWeatherPrediction, \
     AlpineMeadowsGauge, AlpineMeadowsWeatherPrediction, CombinedPredictions, GraniteFallsForecast
-from .serializers import GraniteFallsGaugeSerializer, JordanRoadGaugeSerializer, VerlotGaugeSerializer, \
+from .serializers import GraniteFallsGaugeSerializer, JordanRoadGaugeSerializer, \
     CombinedGaugesSerializer, SilvertonWeatherPredictionSerializer, AlpineMeadowsGaugeSerializer, \
     AlpineMeadowsWeatherPredictionSerializer, CombinedPredictionsSerializer, GraniteFallsPredictionSerializer, \
     GraniteFallsForecastSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from datetime import datetime
+from datetime import datetime, timezone
 from dateutil import tz
 
 
@@ -34,15 +34,6 @@ class JordanRoadGaugeList(APIView):
     def get(self, request):
         river_data = JordanRoadGauge.objects.all()
         serializer = JordanRoadGaugeSerializer(river_data, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class VerlotGaugeList(APIView):
-    permission_classes = (AllowAny,)
-
-    def get(self, request):
-        river_data = VerlotGauge.objects.all()
-        serializer = VerlotGaugeSerializer(river_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -171,18 +162,17 @@ class GraniteFallsPrediction(APIView):
 def granite_forecast_chart(request):
     river_data = GraniteFallsForecast.objects.all()
 
-    df = pd.DataFrame(list(river_data.values('date', 'time', 'stage')))
-    df['datetime_utc'] = pd.to_datetime(df['date'].astype(str) + ' ' + df['time'].astype(str)).dt.tz_localize('UTC')
-    df['datetime_local'] = df['datetime_utc'].dt.tz_convert(tz.tzlocal())
+    df = pd.DataFrame(list(river_data.values('datetime', 'stage')))
+    df['datetime_local'] = df['datetime'].dt.tz_convert(tz.tzlocal())
     df.sort_values(by='datetime_local', inplace=True)
 
-    print(df.datetime_local)
+    # print(f'testing: {df.datetime_local}')
 
     df['Category'] = 'Observed'
     now = datetime.now(tz=tz.tzlocal()).strftime('%Y-%m-%d %H:%M:%S')
     df.loc[df['datetime_local'] > now, 'Category'] = 'Forecast'
 
-    print(now)
+    # print(now)
 
     fig = px.line(
         df,
@@ -220,7 +210,6 @@ def granite_forecast_chart(request):
         )
     )
 
-
     # chart_html = fig.to_html(full_html=False)
     #
     # return JsonResponse({'chart': chart_html}
@@ -247,27 +236,20 @@ class GraniteForecastList(APIView):
     def get(self, request):
         river_data = GraniteFallsForecast.objects.all()
         serializer = GraniteFallsForecastSerializer(river_data, many=True)
-        now_utc = timezone.now().astimezone(tz.tzutc())
+        now_utc = datetime.now(timezone.utc)
         filtered_data = []
-        data = serializer.data
 
-        for entry in river_data:
-            combined_datetime = datetime.combine(entry.date, entry.time).replace(tzinfo=tz.tzutc())
-
-            if combined_datetime > now_utc:
+        for entry in serializer.data:
+            utc_dt = datetime.strptime(entry['datetime'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
+            if utc_dt > now_utc:
                 filtered_data.append(entry)
 
-        serializer = GraniteFallsForecastSerializer(filtered_data, many=True)
-        data = serializer.data
 
-        for entry in data:
-            utc_datetime = datetime.strptime(f'{entry["date"]} {entry["time"]}', '%Y-%m-%d %H:%M:%S').replace(
-                tzinfo=tz.tzutc())
-            local_datetime = utc_datetime.astimezone(tz.tzlocal())
-            # print(utc_datetime, local_datetime)
+        for entry in filtered_data:
+            utc_dt = datetime.strptime(entry['datetime'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
+            local_datetime = utc_dt.astimezone(tz.tzlocal())
 
-            # entry['date'] = local_datetime.strftime('%m-%d-%y')
             entry['date'] = local_datetime.strftime('%a, %b %d')
             entry['time'] = local_datetime.strftime('%I:%M %p')
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(filtered_data, status=status.HTTP_200_OK)
