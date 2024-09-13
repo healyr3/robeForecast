@@ -11,7 +11,7 @@ app = Celery('robeForecast')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-app.autodiscover_tasks()
+app.autodiscover_tasks('riverdata')
 
 app.conf.beat_schedule = {
     'run_fetch': {
