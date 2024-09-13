@@ -41,15 +41,14 @@ class CombindedGaugeList(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        combined_gauges = CombinedGauges.objects.all().order_by('-date', '-time')
+        combined_gauges = CombinedGauges.objects.all().order_by('-datetime')
         serializer = CombinedGaugesSerializer(combined_gauges, many=True)
 
         data = serializer.data
 
         for entry in data:
-            utc_datetime = datetime.strptime(f'{entry["date"]} {entry["time"]}', '%Y-%m-%d %H:%M:%S').replace(
-                tzinfo=tz.tzutc())
-            local_datetime = utc_datetime.astimezone(tz.tzlocal())
+            utc_dt = datetime.strptime(entry['datetime'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
+            local_datetime = utc_dt.astimezone(tz.tzlocal())
             # print(utc_datetime, local_datetime)
 
             entry['date'] = local_datetime.strftime('%m-%d-%y')
@@ -62,15 +61,14 @@ class CombindedPredictionsList(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        combined_predictions = CombinedPredictions.objects.all().order_by('-date', '-time')
+        combined_predictions = CombinedPredictions.objects.all().order_by('-datetime')
         serializer = CombinedPredictionsSerializer(combined_predictions, many=True)
 
         data = serializer.data
 
         for entry in data:
-            utc_datetime = datetime.strptime(f'{entry["date"]} {entry["time"]}', '%Y-%m-%d %H:%M:%S').replace(
-                tzinfo=tz.tzutc())
-            local_datetime = utc_datetime.astimezone(tz.tzlocal())
+            utc_dt = datetime.strptime(entry['datetime'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
+            local_datetime = utc_dt.astimezone(tz.tzlocal())
             # print(utc_datetime, local_datetime)
 
             entry['date'] = local_datetime.strftime('%m-%d-%y')
@@ -83,7 +81,7 @@ class SilvertonWeatherPredictionList(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        silverton_weather = SilvertonWeatherPrediction.objects.all().order_by('-date', '-time')
+        silverton_weather = SilvertonWeatherPrediction.objects.all().order_by('-datetime')
         serializer = SilvertonWeatherPredictionSerializer(silverton_weather, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -92,7 +90,7 @@ class AlpineMeadowsWeatherPredictionList(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        alpine_meadows_weather = AlpineMeadowsWeatherPrediction.objects.all().order_by('-date', '-time')
+        alpine_meadows_weather = AlpineMeadowsWeatherPrediction.objects.all().order_by('-datetime')
         serializer = AlpineMeadowsWeatherPredictionSerializer(alpine_meadows_weather, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -101,7 +99,7 @@ class AlpineMeadowsGaugeList(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        alpine_meadows = AlpineMeadowsGauge.objects.all().order_by('-date', '-time')
+        alpine_meadows = AlpineMeadowsGauge.objects.all().order_by('-datetime')
         serializer = AlpineMeadowsGaugeSerializer(alpine_meadows, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

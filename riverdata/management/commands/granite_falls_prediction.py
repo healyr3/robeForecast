@@ -19,14 +19,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             # Delete tables entries for reset
-            # self.model.objects.all().delete()
+            self.model.objects.all().delete()
 
             current_datetime = datetime.now(timezone.utc)
 
             weather_prediction_data = list(CombinedPredictions.objects.filter(datetime__gt=current_datetime).values(
                 'datetime',
-                'date',
-                'time',
+                # 'date',
+                # 'time',
                 'gauge_name',
                 'gauge_stage',
                 'sp_temp',
@@ -40,8 +40,8 @@ class Command(BaseCommand):
                 'am_precipitation_accumulation',
                 'am_air_temperature'))
 
-            df = pd.DataFrame(weather_prediction_data).drop(columns=['datetime', 'date', 'time', 'gauge_name'])
-            # df = pd.DataFrame(weather_prediction_data).drop(columns=['datetime', 'gauge_name'])
+            # df = pd.DataFrame(weather_prediction_data).drop(columns=['datetime', 'date', 'time', 'gauge_name'])
+            df = pd.DataFrame(weather_prediction_data).drop(columns=['datetime', 'gauge_name'])
 
 
             df['predicted_value'] = rf_model.predict(df)
@@ -50,7 +50,6 @@ class Command(BaseCommand):
             df['prediction_datetime'] = prediction_datetime
 
             df['predicted_value'] = df['predicted_value'].round(2)
-
 
             combined_data = df.to_dict('records')
 
@@ -64,8 +63,6 @@ class Command(BaseCommand):
         for prediction, original_entry in zip(combined_data, weather_prediction_data):
             self.model.objects.update_or_create(
                 datetime=original_entry['datetime'],
-                date=original_entry['date'],
-                time=original_entry['time'],
                 defaults={
                     'sp_temp': original_entry['sp_temp'],
                     'sp_rain_3h': original_entry['sp_rain_3h'],

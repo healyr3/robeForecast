@@ -16,13 +16,12 @@ class Command(BaseCommand):
             current_dt = datetime.now(timezone.utc)
 
             silverton_prediction = list(SilvertonWeatherPrediction.objects.filter(datetime__gt=current_dt).values(
-                'datetime', 'date', 'time', 'temp', 'rain_3h', 'snow_3h'))
+                'datetime', 'temp', 'rain_3h', 'snow_3h'))
 
             alpine_meadows_prediction = list(AlpineMeadowsWeatherPrediction.objects.filter(datetime__gt=current_dt)
-                                             .values('datetime', 'date', 'time', 'temp', 'rain_3h', 'snow_3h'))
+                                             .values('datetime', 'temp', 'rain_3h', 'snow_3h'))
 
             jordan_road_data = list(JordanRoadGauge.objects.filter(datetime__gt=current_dt).values('datetime',
-                                                                                                   'date', 'time',
                                                                                                    'gauge_name',
                                                                                                    'stage'))
 
@@ -40,8 +39,6 @@ class Command(BaseCommand):
             for dt in sorted(all_keys):
                 entry = {
                     'datetime': dt,
-                    'date': dt.date(),
-                    'time': dt.time(),
                     'sp_temp': None,
                     'sp_rain_3h': None,
                     'sp_snow_3h': None,
@@ -81,7 +78,6 @@ class Command(BaseCommand):
                     combined_data.append(entry)
 
             combined_data = sorted(combined_data, key=lambda k: (k['datetime']))
-            # print(combined_data)
 
             self.update_database(combined_data)
 
@@ -94,8 +90,6 @@ class Command(BaseCommand):
         for entry in data:
             self.model.objects.update_or_create(
                 datetime=entry['datetime'],
-                date=entry['date'],
-                time=entry['time'],
                 defaults={
                     'sp_temp': entry['sp_temp'],
                     'sp_rain_3h': entry['sp_rain_3h'],

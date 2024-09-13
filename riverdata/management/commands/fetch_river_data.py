@@ -12,6 +12,9 @@ class BaseFetchRiverData:
     model = None
     def fetch_data(self):
         try:
+            # Delete tables entries for reset
+            # self.model.objects.all().delete()
+
             response = requests.get(self.url)
             response.raise_for_status()  # Check if the response was successful
 
@@ -30,15 +33,15 @@ class BaseFetchRiverData:
                     combined_data.append({
                         'gauge_name': self.gauge_name,
                         'datetime': dt_str,
-                        'date': dt.date(),
-                        'time': dt.time(),
+                        # 'date': dt.date(),
+                        # 'time': dt.time(),
                         'stage': float(stage_str)
                     })
                 # Sorting here will make the id for the entry non-sequential on the database.
                 # data = sorted(combined_data, key=lambda k: (k['date'], k['time']), reverse=True)
 
                 # Sorting here will make the id for the entry sequential on the database.
-                combined_data = sorted(combined_data, key=lambda k: (k['date'], k['time']))
+                combined_data = sorted(combined_data, key=lambda k: (k['datetime']))
                 self.update_database(combined_data)
                 return True, f'Successfully fetched river data.'
             return False, f'Failed to fetch river data.'
@@ -50,8 +53,8 @@ class BaseFetchRiverData:
         for entry in data:
            self.model.objects.update_or_create(
                 datetime=entry['datetime'],
-                date=entry['date'],
-                time=entry['time'],
+                # date=entry['date'],
+                # time=entry['time'],
                 defaults={
                     'gauge_name': entry['gauge_name'],
                     'stage': entry['stage'],

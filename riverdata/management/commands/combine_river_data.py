@@ -7,9 +7,12 @@ class Command(BaseCommand):
     model = CombinedGauges
     def handle(self, *args, **options):
         try:
-            granite_falls_data = list(GraniteFallsGauge.objects.all().values('date', 'time', 'gauge_name', 'stage',
+            # Delete tables entries for reset
+            self.model.objects.all().delete()
+
+            granite_falls_data = list(GraniteFallsGauge.objects.all().values('gauge_name', 'stage',
                                                                              'datetime'))
-            jordan_road_data = list(JordanRoadGauge.objects.all().values('date', 'time', 'gauge_name', 'stage',
+            jordan_road_data = list(JordanRoadGauge.objects.all().values('gauge_name', 'stage',
                                                                          'datetime'))
 
             all_keys = set()
@@ -22,8 +25,6 @@ class Command(BaseCommand):
             for dt in sorted(all_keys):
                 entry = {
                     'datetime': dt,
-                    'date': None,
-                    'time': None,
                     'gauge_1_name': None,
                     'gauge_1_stage': None,
                     'gauge_2_name': None,
@@ -34,8 +35,6 @@ class Command(BaseCommand):
                 jd = next((j for j in jordan_road_data if j['datetime'] == dt), None)
 
                 if gd:
-                    entry['date'] = gd['date']
-                    entry['time'] = gd['time']
                     entry['gauge_1_name'] = gd['gauge_name']
                     entry['gauge_1_stage'] = gd['stage']
                 if jd:
@@ -57,8 +56,6 @@ class Command(BaseCommand):
         for entry in data:
             self.model.objects.update_or_create(
                 datetime=entry['datetime'],
-                date=entry['date'],
-                time=entry['time'],
                 defaults={
                     'gauge_1_name': entry['gauge_1_name'],
                     'gauge_1_stage': entry['gauge_1_stage'],

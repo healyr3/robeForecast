@@ -8,8 +8,6 @@ from riverdata.models import SilvertonWeatherPrediction, AlpineMeadowsWeatherPre
 
 
 class BaseFetchWeatherData:
-    date = None
-    time = None
     temp = None
     rain_3h = None
     snow_3h = None
@@ -32,23 +30,18 @@ class BaseFetchWeatherData:
                     rain_3h = entry.get('rain', {}).get('3h', 0)
                     snow_3h = entry.get('snow', {}).get('3h', 0)
 
-                    dt = datetime.strptime(datetimestamp, '%Y-%m-%d %H:%M:%S')
-                    dt = dt.replace(tzinfo=timezone.utc)
-                    date = dt.date()
-                    time = dt.time()
+                    dt = datetime.strptime(datetimestamp, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
 
                     temp = ((temp - 273.15) * (9/5) + 32)
 
-                    data_list.append({'datetime': dt,'date': date, 'time': time, 'temp': temp, 'rain_3h': rain_3h,
+                    data_list.append({'datetime': dt, 'temp': temp, 'rain_3h': rain_3h,
                                       'snow_3h': snow_3h})
 
                 df = pd.DataFrame(data_list)
 
-                # Sorting here will make the id for the entry non-sequential on the database.
-                # data = sorted(combined_data, key=lambda k: (k['date'], k['time']), reverse=True)
-
                 # Sorting here will make the id for the entry sequential on the database.
-                df = df.sort_values(by=['date', 'time'], ascending=[True, False])
+                df = df.sort_values(by=['datetime'], ascending=[True])
+
                 self.update_database(df.to_dict(orient='records'))
                 return True, f'Successfully fetched weather data.'
             except Exception as e:
@@ -61,8 +54,6 @@ class BaseFetchWeatherData:
         for entry in data:
             self.model.objects.update_or_create(
                 datetime=entry['datetime'],
-                date=entry['date'],
-                time=entry['time'],
                 defaults={
                     'temp': entry['temp'],
                     'rain_3h': entry['rain_3h'],
