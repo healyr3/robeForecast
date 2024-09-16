@@ -1,10 +1,12 @@
 from celery import shared_task
-from .fetch import *
-from .forecast import *
+from django.core.management import call_command
+import logging
 
+logger = logging.getLogger(__name__)
 
 @shared_task()
 def run_fetch():
+    logger.info('Running fetch....')
     call_command('fetch')
 
 
