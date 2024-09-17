@@ -3,6 +3,9 @@ import os
 from celery import Celery
 import logging
 
+from celery.signals import setup_logging
+from django.conf import settings
+
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'robeForecast.settings')
 
@@ -22,7 +25,12 @@ logger.setLevel(logging.INFO)
 
 @app.task(bind=True)
 def debug_task(self):
-    print(f'Request: {self.request!r}')
+    # print(f'Request: {self.request!r}')
+    print('Request: {0!r}'.format(self.request))
+
+@setup_logging.connect
+def config_loggers(*args, **kwargs):
+    logging.config.dictConfig(settings.LOGGING)
 
 # from celery.schedules import crontab
 # from datetime import datetime, timedelta, timezone

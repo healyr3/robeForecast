@@ -170,24 +170,26 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
         'file': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'django.log'),
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
+            # 'handlers': ['console', 'file'],
+            'handlers': ['file'],
+            'level': 'DEBUG',
             'propagate': True,
         },
         'celery': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
+            # 'handlers': ['console', 'file'],
+            'handlers': ['file'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     },
