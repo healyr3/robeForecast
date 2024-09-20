@@ -5,7 +5,7 @@ from django.conf.urls import include
 
 from .views import (GraniteFallsGaugeList, JordanRoadGaugeList, CombindedGaugeList,
                     SilvertonWeatherPredictionList, AlpineMeadowsGaugeList, jordan_chart, CombindedPredictionsList,
-                    granite_forecast_chart, GraniteForecastList)
+                    granite_forecast_chart, GraniteForecastList, AccuracyMetricsList, AveragePredictionList)
 
 urlpatterns = [
     path('granitefalls/', GraniteFallsGaugeList.as_view(), name='granitefalls'),
@@ -19,5 +19,7 @@ urlpatterns = [
     path('granitefallsprediction/', GraniteFallsGaugeList.as_view(), name='granitefallsprediction'),
     path('granitefallsforecastchart/', granite_forecast_chart, name='granitefallsforecastchart'),
     path('granitefallsforecasttable/', GraniteForecastList.as_view(), name='granitefallsforecasttable'),
+    path('accuracymetrics/', AccuracyMetricsList.as_view(), name='accuracymetrics'),
+    path('averageprediction/', AveragePredictionList.as_view(), name='averageprediction'),
 
 ]

@@ -8,11 +8,12 @@ from rest_framework import viewsets, status, authentication
 from rest_framework.response import Response
 from django.http import JsonResponse
 from .models import GraniteFallsGauge, JordanRoadGauge, CombinedGauges, SilvertonWeatherPrediction, \
-    AlpineMeadowsGauge, AlpineMeadowsWeatherPrediction, CombinedPredictions, GraniteFallsForecast
+    AlpineMeadowsGauge, AlpineMeadowsWeatherPrediction, CombinedPredictions, GraniteFallsForecast, AccuracyMetrics, \
+    AveragePrediction
 from .serializers import GraniteFallsGaugeSerializer, JordanRoadGaugeSerializer, \
     CombinedGaugesSerializer, SilvertonWeatherPredictionSerializer, AlpineMeadowsGaugeSerializer, \
     AlpineMeadowsWeatherPredictionSerializer, CombinedPredictionsSerializer, GraniteFallsPredictionSerializer, \
-    GraniteFallsForecastSerializer
+    GraniteFallsForecastSerializer, AccuracyMetricsSerializer, AveragePredictionSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from datetime import datetime, timezone
@@ -184,9 +185,9 @@ def granite_forecast_chart(request):
     fig.add_trace(
         go.Scatter(
             x=[df['datetime_local'].min(), df['datetime_local'].max()],  # x-coordinates
-            y=[5, 5],  # y-coordinates for the line
-            line=go.scatter.Line(color='Orange', width=2, dash='dash'),
-            name='A Bit Low'
+            y=[6, 6],  # y-coordinates for the line
+            line=go.scatter.Line(color='Purple', width=2, dash='dash'),
+            name='Mortal Limit'
         )
     )
 
@@ -202,9 +203,9 @@ def granite_forecast_chart(request):
     fig.add_trace(
         go.Scatter(
             x=[df['datetime_local'].min(), df['datetime_local'].max()],  # x-coordinates
-            y=[6, 6],  # y-coordinates for the line
-            line=go.scatter.Line(color='Purple', width=2, dash='dash'),
-            name='Mortal Limit'
+            y=[5, 5],  # y-coordinates for the line
+            line=go.scatter.Line(color='Orange', width=2, dash='dash'),
+            name='A Bit Low'
         )
     )
 
@@ -251,3 +252,19 @@ class GraniteForecastList(APIView):
             entry['time'] = local_datetime.strftime('%I:%M %p')
 
         return Response(filtered_data, status=status.HTTP_200_OK)
+
+class AveragePredictionList(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        average_prediction = AveragePrediction.objects.all()
+        serializer = AveragePredictionSerializer(average_prediction, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AccuracyMetricsList(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        accuracy_metrics = AccuracyMetrics.objects.all()
+        serializer = AccuracyMetricsSerializer(accuracy_metrics, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

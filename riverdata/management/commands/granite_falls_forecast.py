@@ -28,8 +28,8 @@ class Command(BaseCommand):
 
             granite_falls_forecast = list(
                 GraniteFallsPrediction.objects.filter(datetime__gt=current_datetime).values('datetime',
-                                                                                            'gauge1_name',
-                                                                                            'gauge1_stage',
+                                                                                            'gauge_B_name',
+                                                                                            'gauge_B_stage',
                                                                                             'prediction_datetime'))
 
             observed_df = pd.DataFrame(granite_falls_observed)
@@ -45,7 +45,7 @@ class Command(BaseCommand):
 
             forecast_df = pd.DataFrame(granite_falls_forecast)
 
-            forecast_df.rename(columns={'gauge1_name': 'gauge_name', 'gauge1_stage': 'stage'}, inplace=True)
+            forecast_df.rename(columns={'gauge_B_name': 'gauge_name', 'gauge_B_stage': 'stage'}, inplace=True)
 
             merged_df = pd.concat([observed_df, forecast_df], ignore_index=True)
 

@@ -74,6 +74,11 @@ tr:nth-child(odd) {
   color: #202124;
 }
 
+.th_title {
+  background-color: #D81159;
+  color: white;
+}
+
 th {
   background-color: #2E86AB;
   color: white;

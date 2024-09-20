@@ -3,13 +3,11 @@ from django.db import models
 
 class BaseRiverData(models.Model):
     gauge_name = models.CharField(max_length=100)
-    datetime = models.DateTimeField(null=True, blank=True)
-    # date = models.DateField(null=True, blank=True)
-    # time = models.TimeField(null=True, blank=True)
+    datetime = models.DateTimeField(null=True, blank=True, unique=True)
     stage = models.FloatField()
 
     class Meta:
-        # unique_together = ('date', 'time')
+        # unique_together = ('datetime', 'gauge_name')
         abstract = True
 
     def __str__(self):
@@ -25,23 +23,18 @@ class JordanRoadGauge(BaseRiverData):
 
 
 class CombinedGauges(models.Model):
-    datetime = models.DateTimeField(null=True, blank=True)
-    # date = models.DateField(null=True, blank=True)
-    # time = models.TimeField(null=True, blank=True)
-    gauge_1_name = models.CharField(max_length=100, null=True, blank=True)
-    gauge_1_stage = models.FloatField(null=True, blank=True)
-    gauge_2_name = models.CharField(max_length=100, null=True, blank=True)
-    gauge_2_stage = models.FloatField(null=True, blank=True)
-
-    # class Meta:
-    #     unique_together = ('date', 'time')
+    datetime = models.DateTimeField(null=True, blank=True, unique=True)
+    gauge_B_name = models.CharField(max_length=100, null=True, blank=True)
+    gauge_B_stage = models.FloatField(null=True, blank=True)
+    gauge_A_name = models.CharField(max_length=100, null=True, blank=True)
+    gauge_A_stage = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return str(vars(self))
 
 
 class CombinedPredictions(models.Model):
-    datetime = models.DateTimeField(null=True, blank=True)
+    datetime = models.DateTimeField(null=True, blank=True, unique=True)
     sp_temp = models.FloatField(null=True, blank=True)
     sp_rain_3h = models.FloatField(null=True, blank=True)
     sp_snow_3h = models.FloatField(null=True, blank=True)
@@ -79,7 +72,7 @@ class AlpineMeadowsWeatherPrediction(models.Model):
 
 
 class AlpineMeadowsGauge(models.Model):
-    datetime = models.DateTimeField(null=True, blank=True)
+    datetime = models.DateTimeField(null=True, blank=True, unique=True)
     snow_water_equivalent = models.FloatField()
     snow_depth = models.FloatField()
     precipitation_accumulation = models.FloatField()
@@ -90,7 +83,7 @@ class AlpineMeadowsGauge(models.Model):
 
 
 class GraniteFallsPrediction(models.Model):
-    datetime = models.DateTimeField(null=True, blank=True)
+    datetime = models.DateTimeField(null=True, blank=True, unique=True)
     sp_temp = models.FloatField(null=True, blank=True)
     sp_rain_3h = models.FloatField(null=True, blank=True)
     sp_snow_3h = models.FloatField(null=True, blank=True)
@@ -101,10 +94,10 @@ class GraniteFallsPrediction(models.Model):
     am_snow_depth = models.FloatField(null=True, blank=True)
     am_precipitation_accumulation = models.FloatField(null=True, blank=True)
     am_air_temperature = models.FloatField(null=True, blank=True)
-    gauge2_name = models.CharField(max_length=100, null=True, blank=True)
-    gauge2_stage = models.FloatField(null=True, blank=True)
-    gauge1_name = models.CharField(max_length=100)
-    gauge1_stage = models.FloatField()
+    gauge_A_name = models.CharField(max_length=100, null=True, blank=True)
+    gauge_A_stage = models.FloatField(null=True, blank=True)
+    gauge_B_name = models.CharField(max_length=100)
+    gauge_B_stage = models.FloatField()
     prediction_datetime = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -112,7 +105,7 @@ class GraniteFallsPrediction(models.Model):
 
 
 class GraniteFallsForecast(models.Model):
-    datetime = models.DateTimeField(null=True, blank=True)
+    datetime = models.DateTimeField(null=True, blank=True, unique=True)
     gauge_name = models.CharField(max_length=100)
     stage = models.FloatField()
     prediction_datetime = models.DateTimeField(null=True, blank=True)
@@ -129,6 +122,26 @@ class GraniteFallsPredictionArchive(models.Model):
 
     class Meta:
         unique_together = ('prediction_datetime', 'forecast_datetime')
+
+    def __str__(self):
+        return str(vars(self))
+
+
+class AveragePrediction(models.Model):
+    gauge_name = models.CharField(max_length=100)
+    datetime = models.DateTimeField(unique=True)
+    average_predicted_stage = models.FloatField()
+    observed_stage = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return str(vars(self))
+
+
+class AccuracyMetrics(models.Model):
+    accuracy_period = models.IntegerField()
+    mse = models.FloatField()
+    mae = models.FloatField()
+    r2 = models.FloatField()
 
     def __str__(self):
         return str(vars(self))

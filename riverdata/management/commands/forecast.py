@@ -7,9 +7,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         a = datetime.now()
         call_command('granite_falls_prediction')
-        self.stdout.write(self.style.SUCCESS('Successfully executed granite falls prediction'))
+        self.stdout.write(self.style.SUCCESS('Successfully executed Granite Falls prediction'))
         call_command('granite_falls_forecast')
-        self.stdout.write(self.style.SUCCESS('Successfully fetched granite falls forecast'))
+        self.stdout.write(self.style.SUCCESS('Successfully fetched Granite Falls forecast'))
         b = datetime.now()
         delta = b - a
-        print(f'Time to fetch all data: {delta}')
+        print(f'Time to forecast all data: {delta}')

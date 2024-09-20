@@ -15,6 +15,7 @@ export class DisplayGraniteForecastComponent implements OnInit {
   graniteChartData: any;
   graniteChartLayout: any;
   graniteTableData: any[] = [];
+  accuracyMetrics: any[] = [];
 
   constructor(
     private riverDataService: RiverDataService,
@@ -25,6 +26,7 @@ export class DisplayGraniteForecastComponent implements OnInit {
   ngOnInit(): void {
     this.getGraniteForecastChart();
     this.getGraniteForecastTable();
+    this.getAccuracyMetrics();
     this.titleService.setTitle('Granite Forecast Chart')
   }
 
@@ -46,4 +48,11 @@ export class DisplayGraniteForecastComponent implements OnInit {
       this.graniteTableData = data;
     });
   }
+
+  getAccuracyMetrics() {
+    this.riverDataService.getAccuracyMetrics().subscribe( data => {
+      this.accuracyMetrics = data;
+    })
+  }
+
 }

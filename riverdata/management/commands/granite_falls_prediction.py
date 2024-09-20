@@ -25,8 +25,6 @@ class Command(BaseCommand):
 
             weather_prediction_data = list(CombinedPredictions.objects.filter(datetime__gt=current_datetime).values(
                 'datetime',
-                # 'date',
-                # 'time',
                 'gauge_name',
                 'gauge_stage',
                 'sp_temp',
@@ -74,10 +72,10 @@ class Command(BaseCommand):
                     'am_snow_depth': original_entry['am_snow_depth'],
                     'am_precipitation_accumulation': original_entry['am_precipitation_accumulation'],
                     'am_air_temperature': original_entry['am_air_temperature'],
-                    'gauge2_name': original_entry['gauge_name'],
-                    'gauge2_stage': original_entry['gauge_stage'],
-                    'gauge1_name': 'Granite Falls',
-                    'gauge1_stage': prediction['predicted_value'],
+                    'gauge_A_name': original_entry['gauge_name'],
+                    'gauge_A_stage': original_entry['gauge_stage'],
+                    'gauge_B_name': 'Granite Falls',
+                    'gauge_B_stage': prediction['predicted_value'],
                     'prediction_datetime': prediction['prediction_datetime'],
                 }
             )

@@ -51,5 +51,9 @@ export class RiverDataService {
     return this.http.get<any[]>(`${this.baseUrl}/granitefallsforecasttable/`)
   }
 
+  getAccuracyMetrics(): Observable <any> {
+    return this.http.get<any[]>(`${this.baseUrl}/accuracymetrics/`)
+  }
+
 }
 

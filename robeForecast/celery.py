@@ -1,8 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 import os
-from celery import Celery
 import logging
 
+from celery import Celery
+from celery.schedules import crontab
 from celery.signals import setup_logging
 from django.conf import settings
 
@@ -23,26 +24,18 @@ app.autodiscover_tasks()
 logger = logging.getLogger('celery')
 logger.setLevel(logging.INFO)
 
-@app.task(bind=True)
-def debug_task(self):
-    # print(f'Request: {self.request!r}')
-    print('Request: {0!r}'.format(self.request))
-
-@setup_logging.connect
-def config_loggers(*args, **kwargs):
-    logging.config.dictConfig(settings.LOGGING)
-
-# from celery.schedules import crontab
-# from datetime import datetime, timedelta, timezone
-
-# app.conf.beat_schedule = {
-#     'run_fetch': {
-#         'task': 'robeForecast.tasks.fetch',
-#         'schedule': crontab(minute=2, hour='*/1'),
-#     },
+# @app.task(bind=True)
+# def debug_task(self):
+#     # print(f'Request: {self.request!r}')
+#     print('Request: {0!r}'.format(self.request))
 #
-#     'run_forecast': {
-#         'task': 'robeForecast.tasks.forecast',
-#         'schedule': crontab(minute=3, hour='*/1'),
-#     }
-# }
+# @setup_logging.connect
+# def config_loggers(*args, **kwargs):
+#     logging.config.dictConfig(settings.LOGGING)
+
+app.conf.beat_schedule = {
+    'run_fetch_forecast': {
+        'task': 'riverdata.tasks.run_fetch_forecast_metrics',
+        'schedule': crontab(minute='2', hour='*/1'),
+    }
+}
