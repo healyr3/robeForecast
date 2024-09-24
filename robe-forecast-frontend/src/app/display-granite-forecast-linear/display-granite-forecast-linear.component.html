@@ -1,0 +1,66 @@
+<!--<p>display-granite-forecast-linear works!</p>-->
+<br><br>
+<div id="Plot">
+  <plotly-plot [data]="graniteLinearChartData" [layout]="graniteLinearChartLayout"></plotly-plot>
+</div>
+<br><br>
+<div class="row">
+  <div *ngIf="graniteLinearTableData.length > 0; else noData">
+    <table class="center">
+      <thead>
+        <tr>
+          <th class="th_title" colspan="3">Forecast</th>
+        </tr>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Stage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of graniteLinearTableData">
+          <td>{{ data.date }}</td>
+          <td>{{ data.time }}</td>
+          <td>{{ data.stage }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="accuracyMetricsLinear.length > 0; else noData">
+    <table class="center">
+      <thead>
+        <tr>
+          <th class="th_title" colspan="4">Accuracy Metrics</th>
+        </tr>
+        <tr>
+          <th>Period</th>
+          <th>MSE</th>
+          <th>MAE</th>
+          <th>r2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of accuracyMetricsLinear">
+          <td *ngIf="data.accuracy_period === 7; else checkMonth">Week</td>
+          <ng-template #checkMonth>
+            <td *ngIf="data.accuracy_period === 30; else checkQuarter">Month</td>
+          </ng-template>
+          <ng-template #checkQuarter>
+            <td *ngIf="data.accuracy_period === 91; else showPeriod">Quarter</td>
+          </ng-template>
+          <ng-template #showPeriod>
+          <td>{{ data.accuracy_period }}</td>
+          </ng-template>
+          <td>{{ data.mse }}</td>
+          <td>{{ data.mae }}</td>
+          <td>{{ data.r2 }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div>
+  <ng-template #noData>
+    <p>No data available.</p>
+  </ng-template>
+</div>
