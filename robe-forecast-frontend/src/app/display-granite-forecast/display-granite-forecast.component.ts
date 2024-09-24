@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { RiverDataService } from "../services/river-data.services";
 import { DomSanitizer, SafeHtml, Title } from "@angular/platform-browser";
-import {PlotlyModule} from "angular-plotly.js";
+import { PlotlyModule } from "angular-plotly.js";
+
 @Component({
   selector: 'app-display-granite-forecast',
   standalone: true,

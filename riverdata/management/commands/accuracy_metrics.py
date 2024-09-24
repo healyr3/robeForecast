@@ -3,18 +3,19 @@ from datetime import datetime, timezone, timedelta
 from django.core.management.base import BaseCommand
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 
-from riverdata.models import AveragePrediction, AccuracyMetrics
+from riverdata.models import AveragePrediction, AccuracyMetrics, AccuracyMetricsLinear, AveragePredictionLinear
 
 
 class BaseComputeMetrics:
-    model = AccuracyMetrics
-
+    def __init__(self, task):
+        self.model = task.model
+        self.archive = task.archive
     def compute_metrics(self):
         try:
             current_datetime = datetime.now(timezone.utc)
             time_offset = current_datetime - timedelta(days=self.time_period)
 
-            average_prediction_data = list(AveragePrediction.objects.filter(datetime__gte=time_offset).values(
+            average_prediction_data = list(self.archive.objects.filter(datetime__gte=time_offset).values(
                 'datetime',
                 'average_predicted_stage',
                 'observed_stage'))
@@ -63,15 +64,27 @@ class ComputeMonthMetrics(BaseComputeMetrics):
 class ComputeQuarterMetrics(BaseComputeMetrics):
     time_period = 91
 
+
+class AccuracyMetricsRF:
+    model = AccuracyMetrics
+    archive = AveragePrediction
+
+
+class AccuracyMetricsLinear:
+    model = AccuracyMetricsLinear
+    archive = AveragePredictionLinear
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        computations = [ComputeWeekMetrics(), ComputeMonthMetrics(), ComputeQuarterMetrics()]
-        for computation in computations:
-            success, message = computation.compute_metrics()
-            if success:
-                self.stdout.write(self.style.SUCCESS(message))
-            else:
-                self.stdout.write(self.style.ERROR(message))
+        tasks = [AccuracyMetricsRF(), AccuracyMetricsLinear()]
+        for task in tasks:
+            computations = [ComputeWeekMetrics(task), ComputeMonthMetrics(task), ComputeQuarterMetrics(task)]
+            for computation in computations:
+                success, message = computation.compute_metrics()
+                if success:
+                    self.stdout.write(self.style.SUCCESS(message))
+                else:
+                    self.stdout.write(self.style.ERROR(message))
 
 
 

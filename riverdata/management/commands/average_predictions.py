@@ -1,22 +1,23 @@
 from django.core.management import BaseCommand
 from django.db.models import Avg
 
-from riverdata.models import GraniteFallsPredictionArchive, AveragePrediction
+from riverdata.models import GraniteFallsPredictionArchive, AveragePrediction, AveragePredictionLinear, \
+    GraniteFallsPredictionLinearArchive
 
 
-class Command(BaseCommand):
-    model = AveragePrediction
-    def handle(self, *args, **options):
+class BaseAveragePrediction:
+    archive = None
+    def average_prediction(self):
         try:
-            pred_avg = GraniteFallsPredictionArchive.objects.values('forecast_datetime').annotate(average_value=Avg(
+            pred_avg = self.archive.objects.values('forecast_datetime').annotate(average_value=Avg(
                 'stage'))
 
             self.update_database(pred_avg)
 
-            self.stdout.write(self.style.SUCCESS('Successfully averaged predictions.'))
+            return True, f'Successfully averaged predictions.'
 
         except Exception as e:
-            self.stdout.write(self.style.ERROR('Failed to average predictions: ' + str(e)))
+            return False, f'Failed to average predictions: '
 
     def update_database(self, data):
         for entry in data:
@@ -27,4 +28,25 @@ class Command(BaseCommand):
                     'average_predicted_stage': entry['average_value'],
                 }
             )
+
+
+class AveragePredictionRF(BaseAveragePrediction):
+    model = AveragePrediction
+    archive = GraniteFallsPredictionArchive
+
+
+class AveragePredictionLinear(BaseAveragePrediction):
+    model = AveragePredictionLinear
+    archive = GraniteFallsPredictionLinearArchive
+
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        tasks = [AveragePredictionRF(), AveragePredictionLinear()]
+        for task in tasks:
+            success, message = task.average_prediction()
+            if success:
+                self.stdout.write(self.style.SUCCESS(message))
+            else:
+                self.stdout.write(self.style.ERROR(message))
 

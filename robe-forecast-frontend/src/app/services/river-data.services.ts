@@ -11,48 +11,60 @@ export class RiverDataService {
 
   constructor(private http: HttpClient) {}
 
-  getGraniteFallsData(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/granitefalls/`);
-  }
+  // getGraniteFallsData(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.baseUrl}/granitefalls/`);
+  // }
 
-  getJordanRoadData(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/jordanroad/`);
-  }
+  // getJordanRoadData(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.baseUrl}/jordanroad/`);
+  // }
 
-  getCombinedData(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/combinedgauges/`)
-  }
+  // getCombinedData(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.baseUrl}/combinedgauges/`)
+  // }
 
-  getPredictionData(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/combinedpredictions/`)
-  }
+  // getPredictionData(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.baseUrl}/combinedpredictions/`)
+  // }
 
-  getSilvertonWeatherPrediction(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/silvertonprediction/`)
-  }
+  // getSilvertonWeatherPrediction(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.baseUrl}/silvertonprediction/`)
+  // }
 
-  getAlpineMeadowsWeatherPrediction(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/alpinemeadowsprediction/`)
-  }
+  // getAlpineMeadowsWeatherPrediction(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.baseUrl}/alpinemeadowsprediction/`)
+  // }
 
-  getAlpineMeadowsGauge(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/alpinemeadows/`)
-  }
+  // getAlpineMeadowsGauge(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.baseUrl}/alpinemeadows/`)
+  // }
 
-  getJordanChart(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/jordanchart/`, { responseType: 'json' })
-  }
+  // getJordanChart(): Observable<any> {
+  //   return this.http.get(`${this.baseUrl}/jordanchart/`, { responseType: 'json' })
+  // }
 
   getGraniteForecastChart(): Observable<any> {
     return this.http.get(`${this.baseUrl}/granitefallsforecastchart/`, { responseType: 'json' })
+  }
+
+  getGraniteForecastLinearChart(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/granitefallsforecastlinearchart/`, { responseType: 'json' })
   }
 
   getGraniteForecastTable(): Observable<any> {
     return this.http.get<any[]>(`${this.baseUrl}/granitefallsforecasttable/`)
   }
 
+  getGraniteForecastLinearTable(): Observable<any> {
+    return this.http.get<any[]>(`${this.baseUrl}/granitefallsforecastlineartable/`)
+  }
+
   getAccuracyMetrics(): Observable <any> {
     return this.http.get<any[]>(`${this.baseUrl}/accuracymetrics/`)
+  }
+
+  getAccuracyMetricsLinear(): Observable <any> {
+    return this.http.get<any[]>(`${this.baseUrl}/accuracymetricslinear/`)
   }
 
 }

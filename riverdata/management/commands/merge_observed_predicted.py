@@ -1,14 +1,15 @@
 from django.core.management.base import BaseCommand
 
-from riverdata.models import AveragePrediction, GraniteFallsGauge
+from riverdata.models import AveragePrediction, GraniteFallsGauge, AveragePredictionLinear
 
 
-class Command(BaseCommand):
-    model = AveragePrediction
+class BaseMergeCommand:
+    # model = AveragePrediction
 
-    def handle(self, *args, **options):
+    def merge_observed_predicted(self):
+
         try:
-            average_prediction_data = list(AveragePrediction.objects.all().values('datetime',
+            average_prediction_data = list(self.model.objects.all().values('datetime',
                                                                                   'average_predicted_stage'))
 
             observed_data = list(GraniteFallsGauge.objects.all().values('datetime', 'stage'))
@@ -42,10 +43,10 @@ class Command(BaseCommand):
 
             self.update_database(combined_data)
 
-            self.stdout.write(self.style.SUCCESS('Successfully computed accuracy metrics.'))
+            return True, f'Successfully computed accuracy metrics.'
 
         except Exception as e:
-            self.stdout.write(self.style.ERROR('Failed to compute accuracy metrics: ' + str(e)))
+            return False, f'Failed to compute accuracy metrics: '
 
     def update_database(self, data):
         for entry in data:
@@ -57,3 +58,21 @@ class Command(BaseCommand):
                     'observed_stage': entry['observed_stage'],
                 }
             )
+
+class AveragePredictionRF(BaseMergeCommand):
+    model = AveragePrediction
+
+
+class AveragePredictionLinear(BaseMergeCommand):
+    model = AveragePredictionLinear
+
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        tasks = [AveragePredictionRF(), AveragePredictionLinear()]
+        for task in tasks:
+            success, message = task.merge_observed_predicted()
+            if success:
+                self.stdout.write(self.style.SUCCESS(message))
+            else:
+                self.stdout.write(self.style.ERROR(message))

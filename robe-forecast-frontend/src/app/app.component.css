@@ -1,11 +1,39 @@
 .navbar {
-  flex: 1 1 auto;
+  /*flex: 1 1 auto;*/
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
   background-color: #2E86AB;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  font-size: 40px;
+  /*font-size: 40px;*/
   font-weight: bold;
-  color: white;
+  /*color: white;*/
   text-align: center;
-  display: inline-block;
+  /*display: inline-block;*/
   width: 100%;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #202124;
+  text-decoration: #D81159;
+  align-self: flex-start;
+}
+
+.links {
+  display: flex;
+  align-self: flex-end;
+}
+
+.link {
+  font-size: 15px;
+  margin-left: 15px;
+  /*text-decoration: #D81159;*/
+  color: #D5ECD4;
+}
+
+.link:hover {
+  color: #202124;
 }

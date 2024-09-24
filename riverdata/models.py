@@ -24,10 +24,10 @@ class JordanRoadGauge(BaseRiverData):
 
 class CombinedGauges(models.Model):
     datetime = models.DateTimeField(null=True, blank=True, unique=True)
-    gauge_B_name = models.CharField(max_length=100, null=True, blank=True)
-    gauge_B_stage = models.FloatField(null=True, blank=True)
     gauge_A_name = models.CharField(max_length=100, null=True, blank=True)
     gauge_A_stage = models.FloatField(null=True, blank=True)
+    gauge_B_name = models.CharField(max_length=100, null=True, blank=True)
+    gauge_B_stage = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return str(vars(self))
@@ -114,7 +114,40 @@ class GraniteFallsForecast(models.Model):
         return str(vars(self))
 
 
+class GraniteFallsPredictionLinear(models.Model):
+    datetime = models.DateTimeField(null=True, blank=True, unique=True)
+    gauge_name = models.CharField(max_length=100)
+    stage = models.FloatField()
+    prediction_datetime = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return str(vars(self))
+
+
+class GraniteFallsForecastLinear(models.Model):
+    datetime = models.DateTimeField(null=True, blank=True, unique=True)
+    gauge_name = models.CharField(max_length=100)
+    stage = models.FloatField()
+    prediction_datetime = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return str(vars(self))
+
+
 class GraniteFallsPredictionArchive(models.Model):
+    prediction_datetime = models.DateTimeField()
+    gauge_name = models.CharField(max_length=100)
+    stage = models.FloatField()
+    forecast_datetime = models.DateTimeField()
+
+    class Meta:
+        unique_together = ('prediction_datetime', 'forecast_datetime')
+
+    def __str__(self):
+        return str(vars(self))
+
+
+class GraniteFallsPredictionLinearArchive(models.Model):
     prediction_datetime = models.DateTimeField()
     gauge_name = models.CharField(max_length=100)
     stage = models.FloatField()
@@ -138,6 +171,26 @@ class AveragePrediction(models.Model):
 
 
 class AccuracyMetrics(models.Model):
+    accuracy_period = models.IntegerField()
+    mse = models.FloatField()
+    mae = models.FloatField()
+    r2 = models.FloatField()
+
+    def __str__(self):
+        return str(vars(self))
+
+
+class AveragePredictionLinear(models.Model):
+    gauge_name = models.CharField(max_length=100)
+    datetime = models.DateTimeField(unique=True)
+    average_predicted_stage = models.FloatField()
+    observed_stage = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return str(vars(self))
+
+
+class AccuracyMetricsLinear(models.Model):
     accuracy_period = models.IntegerField()
     mse = models.FloatField()
     mae = models.FloatField()
