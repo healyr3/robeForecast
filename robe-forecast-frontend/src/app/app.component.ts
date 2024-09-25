@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from "@angular/material/button";
-
 
 @Component({
   selector: 'app-root',

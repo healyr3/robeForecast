@@ -173,25 +173,6 @@ LOGGING = {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
         },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'django.log'),
-        },
-    },
-    'loggers': {
-        'django': {
-            # 'handlers': ['console', 'file'],
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'celery': {
-            # 'handlers': ['console', 'file'],
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
     },
 }
 
