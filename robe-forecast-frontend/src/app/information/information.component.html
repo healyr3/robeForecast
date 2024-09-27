@@ -1,87 +1,193 @@
 <!--<p>information works!</p>-->
 <div>
-  <h1 style="background: #D81159">Random Forest Model</h1>
-    <p>The random forest regression model was created with the following inputs. To train the model, data was used
-      for a 5-year period beginning January 2019.</p>
-  <h3 style="color: #A3BFA8">River Stage</h3>
-    <p>SF STILLAGUAMISH − AT JORDAN ROAD (SSFW1)</p>
-  <h3 style="color: #A3BFA8">Weather Forecast</h3>
-    <p>Silverton - OpenWeather</p>
-    <p>Alpine Meadows - OpenWeather</p>
-  <h3 style="color: #A3BFA8">SNOTEL</h3>
-    <p>Alpine Meadows</p>
+  <h2>Random Forest Model</h2>
+    <div class="container">
+        <div class="content">
+          <p>The random forest regression model was created with the following inputs. To train the model, hourly data was
+            used for a 5-year period beginning January 2019. The dataset was split 80/20 for training and testing the random forest model.</p>
+          <p>Through testing the dataset with various subsets, it quickly became apparent that the largest contributing
+            variable for the prediction of the Granite Falls stage was the Jordan Road stage data. That said, it was found
+            that a random forest regression model utilizing all variables mentioned below produced slightly better
+            accuracy metrics than a linear regression (or random forest) using just the Jordan Road stage as input. These
+            findings were using the train/test dataset.</p>
+          <p>Time will tell whether or not the random forest model with all input variables will outperform a linear
+            regression model using just the Jordan Road stage as input. Both models are hosted on this site for users to
+            weigh against each other and use.</p>
+          <p>Note:<br>The random forest model predicts 5-days out due to the availability of weather forecast. The linear
+            model predicts 10-days out using the full prediction span from the Northwest River Forecast Center.</p>
+        </div>
+      </div>
+    <br>
+    <div class="row"><img src="assets/RandomForestFeatureImportance.png" alt="RF Feature Importance" height="500px"/>
+      <img src="assets/RandomForestFeatureImportanceNoJordan.png" alt="RF Feature Importance" height="500px"/></div>
+    <br>
+    <div class="row">
+      <table>
+        <tr>
+            <th colspan="2">Train/Test Accuracy Metrics</th>
+        </tr>
+        <tr>
+          <td>Mean Squared Error</td>
+          <td>0.0126549222</td>
+        </tr>
+        <tr>
+          <td>Mean Absolute Error</td>
+          <td>0.0459305669</td>
+        </tr>
+        <tr>
+          <td>R<sup>2</sup></td>
+          <td>0.9938828186</td>
+        </tr>
+      </table>
+    </div>
+  <h3>River Stage</h3>
+    <div class="container">
+      <div class="content">
+        <p>SF Stillaguamish River − Jordan Road (SSFW1)</p>
+        <p><a href="https://apps.ecology.wa.gov/continuousflowandwq/StationDetails?sta=05A105"
+                  style="color: #2E86AB">https://apps.ecology.wa.gov</a></p>
+        <p><a href="https://www.nwrfc.noaa.gov/river/station/flowplot/flowplot.cgi?SSFW1" style="color: #2E86AB">https://www.nwrfc.noaa.gov</a></p>
+        <p>SF Stillaguamish River - Near Granite Falls (GFLW1)</p>
+        <p><a
+          href="https://nwis.waterservices.usgs.gov/nwis/iv/?sites=12161000&startDT=2019-01-01T00:00:00.975-07:00&endDT=2024-07-01T00:00:00.975-07:00&parameterCd=00065&format=rdb" style="color: #2E86AB">https://nwis.waterservices.usgs.gov</a></p>
+        <p><a href="https://www.nwrfc.noaa.gov/river/station/flowplot/flowplot.cgi?GFLW1" style="color: #2E86AB">https://www.nwrfc.noaa
+          .gov</a></p>
+      </div>
+    </div>
+  <h3>Weather</h3>
+    <div class="container">
+      <div class="content">
+        <p>Silverton, WA - OpenWeather</p>
+        <p>Alpine Meadows, WA - OpenWeather</p>
+        <p><a href="https://openweathermap.org/history-bulk" style="color: #2E86AB">https://openweathermap.org/history-bulk</a></p>
+        <p>The historical and forecasted weather for both of these locations is not actively measured, rather it is
+          modeled by OpenWeather using their ML-based model.</p>
+        <p>Inputs from OpenWeather were air temperature, rain volume for the past 3 hours, and snow volume
+          (in liquid state) for the past 3 hours.
+        </p>
+      </div>
+    </div>
+  <h3>SNOTEL</h3>
+    <div class="container">
+      <div class="content">
+        <p>Alpine Meadows</p>
+        <p><a href="https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=908" style="color: #2E86AB">https://wcc.sc.egov.usda.gov/nwcc</a></p>
+        <p>Inputs from SNOTEL were air temperature, snow water equivalent (water that would
+          theoretically result if the entire snowpack were melted instantaneously), snow depth, and the year accumulated
+        precipitation</p>
+        <p>SNOTEL does not make predictions, but rather reports observations. For the forecast model, the most recent
+          SNOTEL observation is blanketed across the weather forecast data to provide a close estimate of the Alpine
+        Meadows snowpack.</p>
+      </div>
+    </div>
 </div>
 <div>
-  <h1 style="color: #2E86AB">Linear Model</h1>
-  <p>The linear regression model was created using observed gauge readings from ...</p>
+  <h2>Linear Model</h2>
+    <div class="container">
+      <div class="content">
+        <p>The linear regression model was created using observed stage readings from SF Stillaguamish river gauge
+          mentioned above. The data was a subset of that used for the random forest model which contained hourly data for a
+          5-year period beginning January 2019. The dataset was split 80/20 for training and testing the linear model.</p>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <table>
+        <tr>
+            <th colspan="2">Train/Test Accuracy Metrics</th>
+        </tr>
+        <tr>
+          <td>Mean Squared Error</td>
+          <td>0.0243820822</td>
+        </tr>
+        <tr>
+          <td>Mean Absolute Error</td>
+          <td>0.0912573769</td>
+        </tr>
+        <tr>
+          <td>R<sup>2</sup></td>
+          <td>0.9882141022</td>
+        </tr>
+      </table>
+    </div>
 </div>
 <div>
-  <h1 style="color: #2E86AB">Accuracy Metrics</h1>
-</div>
-<div class="row">
-  <div *ngIf="accuracyMetrics.length > 0; else noData">
-    <table class="center">
-      <thead>
-        <tr>
-          <th class="th_title" colspan="4">RF - Accuracy Metrics</th>
-        </tr>
-        <tr>
-          <th>Period</th>
-          <th>MSE</th>
-          <th>MAE</th>
-          <th>r2</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let data of accuracyMetrics">
-          <td *ngIf="data.accuracy_period === 7; else checkMonth">Week</td>
-          <ng-template #checkMonth>
-            <td *ngIf="data.accuracy_period === 30; else checkQuarter">Month</td>
-          </ng-template>
-          <ng-template #checkQuarter>
-            <td *ngIf="data.accuracy_period === 91; else showPeriod">Quarter</td>
-          </ng-template>
-          <ng-template #showPeriod>
-          <td>{{ data.accuracy_period }}</td>
-          </ng-template>
-          <td>{{ data.mse }}</td>
-          <td>{{ data.mae }}</td>
-          <td>{{ data.r2 }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div *ngIf="accuracyMetricsLinear.length > 0; else noData">
-    <table class="center">
-      <thead>
-        <tr>
-          <th class="th_title" colspan="4">Linear - Accuracy Metrics</th>
-        </tr>
-        <tr>
-          <th>Period</th>
-          <th>MSE</th>
-          <th>MAE</th>
-          <th>r2</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let data of accuracyMetricsLinear">
-          <td *ngIf="data.accuracy_period === 7; else checkMonth">Week</td>
-          <ng-template #checkMonth>
-            <td *ngIf="data.accuracy_period === 30; else checkQuarter">Month</td>
-          </ng-template>
-          <ng-template #checkQuarter>
-            <td *ngIf="data.accuracy_period === 91; else showPeriod">Quarter</td>
-          </ng-template>
-          <ng-template #showPeriod>
-          <td>{{ data.accuracy_period }}</td>
-          </ng-template>
-          <td>{{ data.mse }}</td>
-          <td>{{ data.mae }}</td>
-          <td>{{ data.r2 }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <h2>Accuracy Metrics</h2>
+    <div class="container">
+      <div class="content">
+        <p>The accuracy metrics below are updated in real time. These metrics address predictions and observations
+          made since beginning development of the project in September 2024. The values are based on the average of the
+          predictions for all observed values. At the time of the site launch, limited data has been collected which
+          means that the month metrics will not contain a full month of data until November 2024 and the quarter metrics
+          will not contain a full quarter of data until January 2025.</p>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div *ngIf="accuracyMetrics.length > 0; else noData">
+        <table class="center">
+          <thead>
+            <tr>
+              <th class="th_title" colspan="4">RF - Accuracy Metrics</th>
+            </tr>
+            <tr>
+              <th>Period</th>
+              <th>MSE</th>
+              <th>MAE</th>
+              <th>R<sup>2</sup></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of accuracyMetrics">
+              <td *ngIf="data.accuracy_period === 7; else checkMonth">Week</td>
+              <ng-template #checkMonth>
+                <td *ngIf="data.accuracy_period === 30; else checkQuarter">Month</td>
+              </ng-template>
+              <ng-template #checkQuarter>
+                <td *ngIf="data.accuracy_period === 91; else showPeriod">Quarter</td>
+              </ng-template>
+              <ng-template #showPeriod>
+              <td>{{ data.accuracy_period }}</td>
+              </ng-template>
+              <td>{{ data.mse }}</td>
+              <td>{{ data.mae }}</td>
+              <td>{{ data.r2 }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="accuracyMetricsLinear.length > 0; else noData" style="margin-bottom: 3rem;">
+        <table class="center">
+          <thead>
+            <tr>
+              <th class="th_title" colspan="4">Linear - Accuracy Metrics</th>
+            </tr>
+            <tr>
+              <th>Period</th>
+              <th>MSE</th>
+              <th>MAE</th>
+              <th>R<sup>2</sup></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of accuracyMetricsLinear">
+              <td *ngIf="data.accuracy_period === 7; else checkMonth">Week</td>
+              <ng-template #checkMonth>
+                <td *ngIf="data.accuracy_period === 30; else checkQuarter">Month</td>
+              </ng-template>
+              <ng-template #checkQuarter>
+                <td *ngIf="data.accuracy_period === 91; else showPeriod">Quarter</td>
+              </ng-template>
+              <ng-template #showPeriod>
+              <td>{{ data.accuracy_period }}</td>
+              </ng-template>
+              <td>{{ data.mse }}</td>
+              <td>{{ data.mae }}</td>
+              <td>{{ data.r2 }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
   </div>
 </div>
 <div>

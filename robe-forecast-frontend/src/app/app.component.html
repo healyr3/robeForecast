@@ -1,14 +1,45 @@
-<mat-toolbar class="navbar">
-  <span class="title">Robe Forecast</span>
-  <span class="links">
-    <a mat-button class="link" routerLink="/display-granite-forecast">Random Forest</a>
-    <a mat-button class="link" routerLink="/display-granite-forecast-linear">Linear</a>
-    <a mat-button class="link" routerLink="/information">Info</a>
-  </span>
+<mat-toolbar class="titlebar">
+  <ng-container *ngIf="!isSmallScreen; else hamburgerMenu">
+    <div class="titlebar">
+      <span class="title"><img src="assets/PaddleWhitewater.PNG" style="height: 30px" alt="Paddle Whitewater">
+        Robe Forecast</span>
+    </div>
+    <span class="links">
+      <a mat-button class="link" routerLink="/display-granite-forecast">Random Forest</a>
+      <a mat-button class="link" routerLink="/display-granite-forecast-linear">Linear</a>
+      <a mat-button class="link" routerLink="/information">Info</a>
+    </span>
+  </ng-container>
+
+  <ng-template #hamburgerMenu>
+    <div class="menu-container">
+      <div class="titlebar">
+        <div class="titlebar">
+          <span class="title"><img src="assets/PaddleWhitewater.PNG" style="height: 30px" alt="Paddle Whitewater">
+            Robe Forecast</span>
+        </div>
+        <button mat-icon-button (click)="toggleLinks()">
+          <mat-icon>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#202124">
+              <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
+            </svg>
+          </mat-icon>
+        </button>
+      </div>
+      <div *ngIf="showLinks" class="links">
+        <a mat-button class="link" routerLink="/display-granite-forecast">Random Forest</a>
+        <a mat-button class="link" routerLink="/display-granite-forecast-linear">Linear</a>
+        <a mat-button class="link" routerLink="/information">Info</a>
+      </div>
+    </div>
+  </ng-template>
 </mat-toolbar>
 
 <main class="main">
   <div class="content">
+    <ng-container *ngIf="isVerySmallScreen">
+      <p style="text-align: center; font-weight: bold; color: #D81159">** ROTATE PHONE FOR BETTER VIEWING **</p>
+    </ng-container>
     <router-outlet></router-outlet>
   </div>
 </main>

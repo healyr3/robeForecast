@@ -1,15 +1,4 @@
 /*Global Styles*/
-body {
-  background-color: #202124;
-  color: white;
-  /*display: flex;*/
-  /*justify-content: center;*/
-  /*align-items: center;*/
-  /*height: 100vh;*/
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
 #Plot {
   width: 90%;
   text-align: center;
@@ -21,18 +10,38 @@ body {
   max-width: 90%;
 }
 
+body {
+  background-color: #202124;
+  color: white;
+  /*display: flex;*/
+  /*justify-content: center;*/
+  /*align-items: center;*/
+  /*height: 100vh;*/
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 /*Flex container for the tables*/
 .row {
   display: flex;
   justify-content: center;
   gap: 20px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .column {
   /*float: left;*/
   flex: 1;
   width: 33.33%;
+  /*width: 50%;*/
+}
+
+@media (max-width: 768px) {
+  .column {
+    width: 100%; /* Stack tables vertically on smaller screens */
+    margin-bottom: 20px; /* Add spacing between stacked tables */
+  }
 }
 
 .center {

@@ -1,23 +1,10 @@
 import { Routes } from '@angular/router';
-import { LandingPageComponent } from "./landing-page/landing.page.component";
-// import { DisplayRecordsComponent } from "./display-records/display.records.component";
-// import { DisplayCombinedGaugesComponent } from "./display-combined-gauges/display-combined-gauges.component";
-// import { DisplaySilvertonPredictionComponent } from "./display-silverton-prediction/display-silverton-prediction.component";
-// import {DisplayAlpineMeadowsComponent} from "./display-alpine-meadows/display-alpine-meadows.component";
-// import {DisplayJordanChartComponent} from "./display-jordan-chart/display-jordan-chart.component";
-// import {DisplayPredictionChartComponent} from "./display-prediction-chart/display-prediction-chart.component";
 import { DisplayGraniteForecastComponent } from "./display-granite-forecast/display-granite-forecast.component";
 import { DisplayGraniteForecastLinearComponent } from "./display-granite-forecast-linear/display-granite-forecast-linear.component";
 import { InformationComponent } from "./information/information.component";
 
 export const routes: Routes = [
-  { path: '', component: LandingPageComponent },
-  // { path: 'display-records', component: DisplayRecordsComponent },
-  // { path: 'display-combined-gauges', component: DisplayCombinedGaugesComponent },
-  // { path: 'display-silverton-prediction', component: DisplaySilvertonPredictionComponent },
-  // { path: 'display-alpine-meadows', component: DisplayAlpineMeadowsComponent },
-  // { path: 'display-jordan-chart', component: DisplayJordanChartComponent },
-  // { path: 'display-weather-predictions', component: DisplayPredictionChartComponent},
+  { path: '', component: DisplayGraniteForecastComponent },
   { path: 'display-granite-forecast', component: DisplayGraniteForecastComponent },
   { path: 'display-granite-forecast-linear', component: DisplayGraniteForecastLinearComponent },
   { path: 'information', component: InformationComponent}

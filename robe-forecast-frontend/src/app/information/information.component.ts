@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RiverDataService } from "../services/river-data.services";
 import {DomSanitizer, Title} from "@angular/platform-browser";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
 
 
 @Component({
@@ -9,7 +9,8 @@ import {NgForOf, NgIf} from "@angular/common";
   standalone: true,
   imports: [
     NgForOf,
-    NgIf
+    NgIf,
+    NgOptimizedImage
   ],
   templateUrl: './information.component.html',
   styleUrl: './information.component.css'

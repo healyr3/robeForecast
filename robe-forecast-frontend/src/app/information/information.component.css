@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 80%;
+    max-width: 900px;
+    font-size: medium;
+    padding: 15px;
+    background-color: #2c2d32;
+}
+
+h2 {
+  background: #D81159;
+  text-align: center;
+}
+
+h3 {
+  background: #2E86AB;
+  color: #202124;
+  text-align: center;
+}
+
+h4 {
+  color: #2E86AB;
+}
+
+p {
+  color: white;
+}

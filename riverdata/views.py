@@ -173,13 +173,9 @@ class GraniteFallsForecastViewSet(viewsets.ModelViewSet):
         df['datetime_local'] = df['datetime'].dt.tz_convert(tz.tzlocal())
         df.sort_values(by='datetime_local', inplace=True)
 
-        # print(f'testing: {df.datetime_local}')
-
         df['Category'] = 'Observed'
         now = datetime.now(tz=tz.tzlocal()).strftime('%Y-%m-%d %H:%M:%S')
         df.loc[df['datetime_local'] > now, 'Category'] = 'Forecast'
-
-        # print(now)
 
         fig = px.line(
             df,
@@ -214,6 +210,16 @@ class GraniteFallsForecastViewSet(viewsets.ModelViewSet):
                 y=[5, 5],  # y-coordinates for the line
                 line=go.scatter.Line(color='Orange', width=2, dash='dash'),
                 name='A Bit Low'
+            )
+        )
+
+        fig.update_layout(
+            legend=dict(
+                x=0.009,  # X position of the legend (0 is left, 1 is right)
+                y=0.97,  # Y position of the legend (0 is bottom, 1 is top)
+                xanchor="left",  # Anchor point of the legend (left, center, right)
+                yanchor="top",  # Anchor point of the legend (top, middle, bottom)
+                bgcolor='rgba(255, 255, 255, 0.85)'  # Transparent background for the legend
             )
         )
 
@@ -287,6 +293,16 @@ class GraniteFallsForecastLinearViewSet(viewsets.ModelViewSet):
                 y=[5, 5],  # y-coordinates for the line
                 line=go.scatter.Line(color='Orange', width=2, dash='dash'),
                 name='A Bit Low'
+            )
+        )
+
+        fig.update_layout(
+            legend=dict(
+                x=0.009,  # X position of the legend (0 is left, 1 is right)
+                y=0.97,  # Y position of the legend (0 is bottom, 1 is top)
+                xanchor="left",  # Anchor point of the legend (left, center, right)
+                yanchor="top",  # Anchor point of the legend (top, middle, bottom)
+                bgcolor='rgba(255, 255, 255, 0.85)'  # Transparent background for the legend
             )
         )
 
