@@ -4,8 +4,6 @@ import logging
 
 from celery import Celery
 from celery.schedules import crontab
-from celery.signals import setup_logging
-from django.conf import settings
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'robeForecast.settings')
@@ -23,15 +21,6 @@ app.autodiscover_tasks()
 # Set up logging for Celery
 logger = logging.getLogger('celery')
 logger.setLevel(logging.INFO)
-
-# @app.task(bind=True)
-# def debug_task(self):
-#     # print(f'Request: {self.request!r}')
-#     print('Request: {0!r}'.format(self.request))
-#
-# @setup_logging.connect
-# def config_loggers(*args, **kwargs):
-#     logging.config.dictConfig(settings.LOGGING)
 
 app.conf.beat_schedule = {
     'run_fetch_forecast': {

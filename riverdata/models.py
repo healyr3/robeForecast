@@ -22,17 +22,6 @@ class JordanRoadGauge(BaseRiverData):
     pass
 
 
-class CombinedGauges(models.Model):
-    datetime = models.DateTimeField(null=True, blank=True, unique=True)
-    gauge_A_name = models.CharField(max_length=100, null=True, blank=True)
-    gauge_A_stage = models.FloatField(null=True, blank=True)
-    gauge_B_name = models.CharField(max_length=100, null=True, blank=True)
-    gauge_B_stage = models.FloatField(null=True, blank=True)
-
-    def __str__(self):
-        return str(vars(self))
-
-
 class CombinedPredictions(models.Model):
     datetime = models.DateTimeField(null=True, blank=True, unique=True)
     sp_temp = models.FloatField(null=True, blank=True)
@@ -50,6 +39,7 @@ class CombinedPredictions(models.Model):
 
     def __str__(self):
         return str(vars(self))
+
 
 class SilvertonWeatherPrediction(models.Model):
     datetime = models.DateTimeField(null=True, blank=True)

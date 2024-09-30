@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-@0&e8tn()t3%e#c2cv4=h7wh*y+z58_p#56za-b+#v&j(#piok'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    # 'api',
     'riverdata',
     'django_redis',
 ]
@@ -82,10 +81,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'robeForecast.wsgi.riverdata'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {

@@ -4,7 +4,7 @@ from datetime import datetime
 from django.core.management.base import BaseCommand
 
 from riverdata.models import GraniteFallsGauge, JordanRoadGauge
-from .combine_river_data import Command as CombineCommand
+from riverdata.management.commands.combine_river_data import Command as CombineCommand
 
 class BaseFetchRiverData:
     gauge_name = None
