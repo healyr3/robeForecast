@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  django:
+    build: .
+    container_name: django_app
+    command: ["./start.sh"]
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=localhost
+      - DB_NAME=robe_forecast_db
+      - DB_USER=django_user
+      - DB_PASSWORD=weeTh0oh
+      - DEBUG=0
+      - ALLOWED_HOSTS=*
+      - SECRETKEY=django-insecure-@0&e8tn()t3%e#c2cv4=h7wh*y+z58_p#56za-b+#v&j(#piok
+    volumes:
+      - .:/app
+    networks:
+      - app-network
+
+  angular:
+    build:
+      context: ./robe-forecast-frontend
+      dockerfile: Dockerfile
+    container_name: angular_app
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+  celery:
+    build: .
+    container_name: celery_worker
+    command: ["celery", "-A", "robeForecast", "worker", "--loglevel=INFO", "--concurrency", "1", "-P", "solo"]
+    depends_on:
+      - django
+      - db
+    networks:
+      - app-network
+
+  celery_beat:
+    build: .
+    container_name: celery_beat
+    command: ["celery", "-A", "robeForecast", "beat", "--loglevel=INFO"]
+    depends_on:
+      - django
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    container_name: mysql_db
+    environment:
+      MYSQL_DATABASE: robe_forecast_db
+      MYSQL_USER: django_user
+      MYSQL_PASSWORD: weeTh0oh
+      MYSQL_ROOT_PASSWORD: weeTh0oh
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+volumes:
+  db-data:
+
+networks:
+  app-network:
+    driver: bridge

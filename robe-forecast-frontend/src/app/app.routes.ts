@@ -7,6 +7,5 @@ export const routes: Routes = [
   { path: '', component: DisplayGraniteForecastComponent },
   { path: 'display-granite-forecast', component: DisplayGraniteForecastComponent },
   { path: 'display-granite-forecast-linear', component: DisplayGraniteForecastLinearComponent },
-  { path: 'information', component: InformationComponent}
-
+  { path: 'information', component: InformationComponent },
 ];
