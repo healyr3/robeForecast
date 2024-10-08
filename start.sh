@@ -1,0 +1,26 @@
+#!/bin/sh
+
+echo "Starting Script"
+
+python manage.py makemigrations
+echo "Starting makemigrations"
+
+python manage.py migrate
+echo "Starting migrate"
+
+python manage.py collectstatic --noinput
+echo "Starting collectstatic"
+
+celery -A robeForecast worker --loglevel=INFO --concurrency 1 -P solo &
+echo "Starting celery worker"
+
+celery -A robeForecast beat --loglevel=INFO &
+echo "Starting celery beat"
+
+#gunicorn robeForecast.wsgi:application --bind 0.0.0.0:8000
+#echo "Starting wsgi"
+
+python manage.py runserver 0.0.0.0:8000
+echo "Starting runserver"
+
+echo "Finished"

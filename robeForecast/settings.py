@@ -9,15 +9,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-@0&e8tn()t3%e#c2cv4=h7wh*y+z58_p#56za-b+#v&j(#piok'
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'django-insecure-@0&e8tn()t3%e#c2cv4=h7wh*y+z58_p#56za-b+#v&j(#piok'
+# SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
-DEBUG = os.environ.get('DEBUG')
+DEBUG = True
+# DEBUG = os.environ.get('DEBUG')
 
-# ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS')
+ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS')
 
 # Application definition
 
@@ -49,7 +49,14 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
+    "http://localhost:8080",
+    "http://localhost:80",
+    "http://localhost:8000"
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'robeForecast.urls'
 
@@ -70,7 +77,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'robeForecast.wsgi.riverdata'
+# WSGI_APPLICATION = 'robeForecast.wsgi.riverdata'
 
 DATABASES = {
     'default': {
@@ -78,7 +85,8 @@ DATABASES = {
         'NAME': 'robe_forecast_db',
         'USER': 'django_user',
         'PASSWORD': 'weeTh0oh',
-        'HOST': 'localhost',
+        # 'HOST': 'localhost',
+        'HOST': 'mysql_db',
         'PORT': '3306',
     }
 }
@@ -141,8 +149,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     }
 # }
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL for Redis server
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL for Redis server
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL for Redis server
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+CELERY_BROKER_URL = 'redis://robeforecast-redis-1:6379/0'  # URL for Redis server
+CELERY_RESULT_BACKEND = 'redis://robeforecast-redis-1:6379/0'
 
 # Optional Celery settings
 CELERY_ACCEPT_CONTENT = ['json']

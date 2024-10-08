@@ -22,6 +22,14 @@ class JordanRoadGauge(BaseRiverData):
     pass
 
 
+class CombinedGauges(models.Model):
+    datetime = models.DateTimeField(null=True, blank=True)
+    gauge_1_name = models.CharField(max_length=100, null=True, blank=True)
+    gauge_1_stage = models.FloatField(null=True, blank=True)
+    gauge_2_name = models.CharField(max_length=100, null=True, blank=True)
+    gauge_2_stage = models.FloatField(null=True, blank=True)
+
+
 class CombinedPredictions(models.Model):
     datetime = models.DateTimeField(null=True, blank=True, unique=True)
     sp_temp = models.FloatField(null=True, blank=True)
