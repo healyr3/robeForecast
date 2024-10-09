@@ -2,6 +2,11 @@
 
 echo "Starting Script"
 
+until nc -z db 3306; do
+  echo "Waiting for database...";
+  sleep 5;
+done
+
 python manage.py makemigrations
 echo "Starting makemigrations"
 

@@ -47,16 +47,24 @@ MIDDLEWARE = [
 
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
-    "http://localhost:8080",
-    "http://localhost:80",
-    "http://localhost:8000"
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:4200",
+#     "http://localhost:8080",
+#     "http://localhost:80",
+#     "http://localhost:8000",
+#     "http://192.168.160.0:4200",
+#     "http://192.168.160.0:8080",
+#     "http://192.168.160.0:80",
+#     "http://192.168.160.0:8000",
+#     "http://127.0.0.0:4200",
+#     "http://127.0.0.0:8080",
+#     "http://127.0.0.0:80",
+#     "http://127.0.0.0:8000",
+# ]
 
 CORS_ALLOW_CREDENTIALS = True
 
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'robeForecast.urls'
 

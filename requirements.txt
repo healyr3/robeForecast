@@ -13,7 +13,7 @@ plotly==5.23.0
 python_dateutil==2.9.0.post0
 redis==5.0.8
 Requests==2.32.3
-#scikit_learn==1.5.2
+scikit_learn==1.5.2
 
 # Angular
 #Requests==2.32.3

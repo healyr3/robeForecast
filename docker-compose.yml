@@ -10,8 +10,10 @@ services:
       MYSQL_PASSWORD: weeTh0oh
       MYSQL_ROOT_PASSWORD: weeTh0oh
     volumes:
-      - ./datadump.sql:/docker-entrypoint-initdb.d/init.sql
+#      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+#      - ./datadump.sql:/docker-entrypoint-initdb.d/init.sql
       - db-data:/var/lib/mysql
+      - ./complete.sql:/docker-entrypoint-initdb.d/complete.sql
     ports:
       - "3307:3306"
 #      - "3307:3307"
