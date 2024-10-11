@@ -17,5 +17,5 @@ COPY ["riverdata", "robeForecast", "staticfiles", "celerybeat_schedule.*", "mana
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-#ENTRYPOINT ["./start.sh"]
-ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["./start.sh"]
+#ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]

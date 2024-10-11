@@ -2,19 +2,19 @@
 
 echo "Starting Script"
 
-echo "Waiting 5 seconds....."
-sleep 5;
+#echo "Waiting 5 seconds....."
+#sleep 5;
+#
+#echo "Waiting 5 seconds....."
+#sleep 5;
+#
+#echo "Waiting 5 seconds....."
+#sleep 5;
 
-echo "Waiting 5 seconds....."
-sleep 5;
-
-echo "Waiting 5 seconds....."
-sleep 5;
-
-#until nc -z db 3306; do
-#  echo "Waiting for database...";
-#  sleep 5;
-#done
+until nc -z db 3306; do
+  echo "Waiting for database...";
+  sleep 5;
+done
 
 #python manage.py makemigrations
 #echo "Starting makemigrations"
