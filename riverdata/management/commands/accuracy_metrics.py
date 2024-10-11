@@ -10,6 +10,7 @@ class BaseComputeMetrics:
     def __init__(self, task):
         self.model = task.model
         self.archive = task.archive
+
     def compute_metrics(self):
         try:
             current_datetime = datetime.now(timezone.utc)
@@ -55,11 +56,14 @@ class BaseComputeMetrics:
             }
         )
 
+
 class ComputeWeekMetrics(BaseComputeMetrics):
     time_period = 7
 
+
 class ComputeMonthMetrics(BaseComputeMetrics):
     time_period = 30
+
 
 class ComputeQuarterMetrics(BaseComputeMetrics):
     time_period = 91
@@ -74,6 +78,7 @@ class AccuracyMetricsLinear:
     model = AccuracyMetricsLinear
     archive = AveragePredictionLinear
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         tasks = [AccuracyMetricsRF(), AccuracyMetricsLinear()]
@@ -85,6 +90,3 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.SUCCESS(message))
                 else:
                     self.stdout.write(self.style.ERROR(message))
-
-
-

@@ -8,16 +8,14 @@ RUN apk update && apk add --no-cache \
     gcc \
     musl-dev \
     pkgconfig \
-    build-base
+    build-base \
+    bash
 
 WORKDIR /app
 
-COPY requirements.txt /app/
-#COPY start.sh /app/start.sh
-#RUN chmod +x /app/start.sh
-RUN #apk add --no-cache build-base gcc
+COPY ["riverdata", "robeForecast", "staticfiles", "celerybeat_schedule.*", "manage.py", "requirements.txt", "start.sh", "wsgi.py", "/app/"]
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/
-
-ENTRYPOINT ["./start.sh"]
+#ENTRYPOINT ["./start.sh"]
+ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -1,17 +1,26 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Starting Script"
 
-until nc -z db 3306; do
-  echo "Waiting for database...";
-  sleep 5;
-done
+echo "Waiting 5 seconds....."
+sleep 5;
 
-python manage.py makemigrations
-echo "Starting makemigrations"
+echo "Waiting 5 seconds....."
+sleep 5;
 
-python manage.py migrate
-echo "Starting migrate"
+echo "Waiting 5 seconds....."
+sleep 5;
+
+#until nc -z db 3306; do
+#  echo "Waiting for database...";
+#  sleep 5;
+#done
+
+#python manage.py makemigrations
+#echo "Starting makemigrations"
+#
+#python manage.py migrate
+#echo "Starting migrate"
 
 python manage.py collectstatic --noinput
 echo "Starting collectstatic"
@@ -22,10 +31,10 @@ echo "Starting celery worker"
 celery -A robeForecast beat --loglevel=INFO &
 echo "Starting celery beat"
 
-#gunicorn robeForecast.wsgi:application --bind 0.0.0.0:8000
-#echo "Starting wsgi"
+gunicorn robeForecast.wsgi:application --bind 0.0.0.0:8000
+echo "Starting wsgi"
 
-python manage.py runserver 0.0.0.0:8000
-echo "Starting runserver"
+#python manage.py runserver 0.0.0.0:8000
+#echo "Starting runserver"
 
 echo "Finished"

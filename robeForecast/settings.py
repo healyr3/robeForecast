@@ -4,32 +4,22 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@0&e8tn()t3%e#c2cv4=h7wh*y+z58_p#56za-b+#v&j(#piok'
-# SECRET_KEY = os.environ.get('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = os.environ.get('DEBUG')
-
 ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+DEBUG = os.environ.get('DEBUG')
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
     'corsheaders',
     'riverdata',
     'django_redis',
@@ -41,10 +31,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 ]
 
 # CORS_ALLOWED_ORIGINS = [
@@ -85,17 +73,16 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'robeForecast.wsgi.riverdata'
+WSGI_APPLICATION = 'robeForecast.wsgi.application'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'robe_forecast_db',
-        'USER': 'django_user',
-        'PASSWORD': 'weeTh0oh',
-        # 'HOST': 'localhost',
-        'HOST': 'mysql_db',
         'PORT': '3306',
+        'NAME': os.environ.get('MYSQL_DATABASE'),
+        'USER': os.environ.get('MYSQL_USER'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
+        'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
     }
 }
 
@@ -104,7 +91,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -124,16 +110,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -141,30 +123,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379/0",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     }
-# }
-
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL for Redis server
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL for Redis server
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
-CELERY_BROKER_URL = 'redis://robeforecast-redis-1:6379/0'  # URL for Redis server
-CELERY_RESULT_BACKEND = 'redis://robeforecast-redis-1:6379/0'
+CELERY_BROKER_URL = 'redis://robe_forecast_redis:6379/0'  # URL for Redis server
+CELERY_RESULT_BACKEND = 'redis://robe_forecast_redis:6379/0'
 
 # Optional Celery settings
 CELERY_ACCEPT_CONTENT = ['json']
