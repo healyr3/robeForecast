@@ -1,7 +1,7 @@
 services:
   db:
+    image: rhealy5/robeforecast-mysql
     container_name: robeforecast-mysql
-    image: mysql:8.0
     environment:
       MYSQL_HOST: robeforecast-mysql
       MYSQL_DATABASE: robe_forecast_db
@@ -17,7 +17,7 @@ services:
       - app-network
 
   django:
-    build: .
+    image: rhealy5/robeforecast-django
     container_name: robeforecast-django
     ports:
       - "8000:8000"
@@ -37,17 +37,15 @@ services:
       - app-network
 
   redis:
+    image: rhealy5/robeforecast-redis
     container_name: robeforecast-redis
-    image: redis:latest
     ports:
       - "6379:6379"
     networks:
       - app-network
 
   angular:
-    build:
-      context: ./robe-forecast-frontend
-      dockerfile: Dockerfile
+    image: rhealy5/robeforecast-angular
     container_name: robeforecast-angular
     ports:
       - "80:80"
@@ -60,6 +58,3 @@ volumes:
 networks:
   app-network:
     driver: bridge
-#    ipam:
-#      config:
-#        - subnet: 172.150.0.0/24  # Adjust subnet if needed

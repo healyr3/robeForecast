@@ -35,24 +35,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:4200",
-#     "http://localhost:8080",
-#     "http://localhost:80",
-#     "http://localhost:8000",
-#     "http://192.168.160.0:4200",
-#     "http://192.168.160.0:8080",
-#     "http://192.168.160.0:80",
-#     "http://192.168.160.0:8000",
-#     "http://127.0.0.0:4200",
-#     "http://127.0.0.0:8080",
-#     "http://127.0.0.0:80",
-#     "http://127.0.0.0:8000",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "https://robeforecast.com",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'robeForecast.urls'
 
@@ -130,8 +119,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = 'redis://robe_forecast_redis:6379/0'  # URL for Redis server
-CELERY_RESULT_BACKEND = 'redis://robe_forecast_redis:6379/0'
+CELERY_BROKER_URL = 'redis://robeforecast-redis:6379/0'  # URL for Redis server
+CELERY_RESULT_BACKEND = 'redis://robeforecast-redis:6379/0'
 
 # Optional Celery settings
 CELERY_ACCEPT_CONTENT = ['json']

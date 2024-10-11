@@ -19,6 +19,6 @@ from django.urls.conf import include
 
 urlpatterns = [
     path('api/', include('riverdata.urls')),
-
+    path('/', include('riverdata.urls')),
 
 ]
